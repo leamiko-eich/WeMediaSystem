@@ -149,6 +149,10 @@ class SogouSelenium(BaseSelenium):
 
 
 if __name__ == "__main__":
+    import sys
+    print(sys.path)
+    from commonlib.entity.mylog import set_my_log
+    set_my_log("log/sogou.log")
     mode = 'debug'
     if len(sys.argv) > 1:
         mode = sys.argv[1]

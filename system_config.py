@@ -44,7 +44,7 @@ def find_root_directory():
 
 
 
-def set_system_path(is_linux):
+def set_system_path(is_linux, root_directory):
     curpath=os.getcwd()
     curpath=os.path.dirname(os.path.abspath(__file__))
     os.chdir(curpath)
@@ -52,18 +52,12 @@ def set_system_path(is_linux):
     print("curpath:%s\t rootdir:%s"%(curpath, rootdir))
     if is_linux:
         sys.path.append("%s"%(rootdir))
-        sys.path.append("%s/mygpt"%(rootdir))
-        sys.path.append("%s/commonlib"%(rootdir))
-        sys.path.append("%s/commonlib/entity"%(rootdir))
-        sys.path.append("%s/win_automation/notion_automation"%(rootdir))
+        sys.path.append("%s"%(root_directory))
     else:
         sys.path.append("%s"%(rootdir))
-        sys.path.append("%s\\mygpt"%(rootdir))
-        sys.path.append("%s\\commonlib"%(rootdir))
-        sys.path.append("%s\\commonlib\\entity"%(rootdir))
-        sys.path.append("%s\\win_automation\\notion_automation"%(rootdir))
+        sys.path.append("%s"%(root_directory))
 
 is_linux = get_is_linux()
 root_directory = find_root_directory()
 print("root_directory:%s"%(root_directory))
-set_system_path(is_linux)
+set_system_path(is_linux, root_directory)

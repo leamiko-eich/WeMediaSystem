@@ -4,9 +4,12 @@ from selenium import webdriver
 from selenium.webdriver.chrome.service import Service as ChromeService
 from webdriver_manager.chrome import ChromeDriverManager
 import time
+import os
 
 class BaseSelenium(object):
     def __init__(self, mode="debug"):
+        if not os.path.exists("data"):
+            os.mkdir("data")
 
         chrome_options = webdriver.ChromeOptions()
         #path_driver = "H:\driver\chromedriver.exe"
