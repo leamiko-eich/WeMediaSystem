@@ -5,11 +5,14 @@ from selenium.webdriver.chrome.service import Service as ChromeService
 from webdriver_manager.chrome import ChromeDriverManager
 import time
 import os
+from configparser import ConfigParser
 
 class BaseSelenium(object):
     def __init__(self, mode="debug"):
         if not os.path.exists("data"):
             os.mkdir("data")
+
+        self.dict_user_pass = {}
 
         chrome_options = webdriver.ChromeOptions()
         #path_driver = "H:\driver\chromedriver.exe"
@@ -34,6 +37,9 @@ class BaseSelenium(object):
             WEB_DRIVER_PATH = '/usr/bin/chromedriver'
             driver = webdriver.Chrome(options=chrome_options, executable_path=WEB_DRIVER_PATH)
         else:
+            # chrome_options.add_argument("user-data-dir=C:\\Users\\你用户名\\AppData\\Local\\Google\\Chrome\\User Data\\Profile 2")
+            print("使用profile 1")
+            chrome_options.add_argument("user-data-dir=C:\\Users\\Administrator\\AppData\\Local\\google\\Chrome\\User Data\\Profile 1")
             driver = webdriver.Chrome(options=chrome_options)
 
         self.driver = driver
@@ -48,6 +54,16 @@ class BaseSelenium(object):
         file_name = "data/%s" % file_name
         with open(file_name, "w", encoding="utf-8") as f:
             f.write(element.get_attribute("outerHTML"))
+
+
+    def load_user_pass(self, path_config = 'config/user_pass.ini', section_name = "baidu"):
+        config = ConfigParser()
+        config.read( path_config, encoding="utf-8")
+
+        section_dict = dict(config.items(section_name))
+        print("dict:", section_dict)
+        self.dict_user_pass = section_dict
+        return section_dict
 
             
     def quit_driver(self):
