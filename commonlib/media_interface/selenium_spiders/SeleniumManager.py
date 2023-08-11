@@ -26,7 +26,7 @@ class SeleniumManager(object):
 
     def call_platform(self,  msg_info: MsgInfo):
 
-        name_platform = msg_info.public_article.platform
+        name_platform = msg_info.task_info.platform
         logging.info("call_platform name_platform:%s", name_platform)
         assert(name_platform in self.platform_agents)
 
@@ -40,6 +40,9 @@ class SeleniumManager(object):
 
             plat_agent.login_with_cookie(account_name)
             plat_agent.publish_article(art_title, art_content)
+
+        elif msg_info.task_info.task_name == 'ScrwalAuthorLink':
+            pass
         else:
             logging.info("没有找到对应的task： %s" % (msg_info.task_info.task_name))
 

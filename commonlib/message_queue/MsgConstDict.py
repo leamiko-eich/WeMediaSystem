@@ -30,5 +30,10 @@ dic_ex_queue_route = {
         "name_exchange": "ExPublishArticle",
         "name_queue": "QueuePublishArticle",
         "name_route_key": "RoutePublishArticle"
+    },
+    "scrwal_author_link":{
+        "name_exchange": "ExScrwalAuthorLink",
+        "name_queue": "QueueScrwalAuthorLink",
+        "name_route_key": "RouteScrwalAuthorLink"
     }
 }

@@ -5,27 +5,24 @@ os.chdir(ROOTDIR_WeMediaSystem)
 sys.path.append(ROOTDIR_WeMediaSystem)
 
 from commonlib.message_queue.MsgProducer import MsgProducer
-from commonlib.schema import TaskInfo, GenerateArticle, PublicArticle, MsgInfo
+from commonlib.schema import TaskInfo, GenerateArticle, PublicArticle, MsgInfo, TargetAuthor
 
 
-class ProduceArticles(object):
+class ProduceAuthorLink(object):
     def __init__(self):
         curpaht = os.getcwd()
         print("curpaht:", curpaht)
 
-        self.art_producer = MsgProducer(key_ex_queue_route="publish_article")
+        self.art_producer = MsgProducer(key_ex_queue_route="scrwal_author_link")
 
     def generat_fake_info(self):
 
         msg_info = MsgInfo()
-        msg_info.task_info.task_name = 'PublicArticle'
-        msg_info.task_info.platform = 'Zhihu'
-        msg_info.public_article.account_name = '18511400319'
-        msg_info.public_article.platform = 'Zhihu'
+        msg_info.task_info.task_name = 'ScrwalAuthorLink'
 
-        msg_info.generate_article.generate_title = '个人日记234234324243234'
-        msg_info.generate_article.generate_content = '个人日记12323213123123'
-        msg_info.generate_article.format_content = '个人日记234234'
+        msg_info.target_author.author = '黛西呜呜'
+        msg_info.target_author.subscribe_link = 'https://www.zhihu.com/people/dxww/posts'
+        msg_info.target_author.platform = 'Zhihu'
 
 
 
@@ -43,6 +40,6 @@ class ProduceArticles(object):
     
     
 if __name__ == "__main__":
-    obj_produce_articles = ProduceArticles()
+    obj_produce_articles = ProduceAuthorLink()
     obj_produce_articles.start_flow()
 

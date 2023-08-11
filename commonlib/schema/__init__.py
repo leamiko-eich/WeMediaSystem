@@ -1,1 +1,1 @@
-from .media_schema import MsgInfo, TaskInfo, GenerateArticle, PublicArticle
+from .media_schema import MsgInfo, TaskInfo, GenerateArticle, PublicArticle, TargetAuthor
