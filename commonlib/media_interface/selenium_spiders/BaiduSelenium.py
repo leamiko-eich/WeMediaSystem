@@ -7,7 +7,7 @@ from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.keys import Keys
-from BaseSelenium import BaseSelenium
+from .BaseSelenium import BaseSelenium
  
  
 class Crawler(BaseSelenium):

@@ -8,6 +8,7 @@ import os, json
 from configparser import ConfigParser
 
 class BaseSelenium(object):
+    name_platform = 'base'
     def __init__(self, mode="debug"):
         if not os.path.exists("data"):
             os.mkdir("data")
@@ -42,6 +43,8 @@ class BaseSelenium(object):
 
         # self.driver = driver
 
+    def publish_article(self, article_title='', article_content=''):
+        pass
         
     def save_driver_html(self, driver: webdriver, file_name="1.html"):
         file_name = "data/%s" % file_name

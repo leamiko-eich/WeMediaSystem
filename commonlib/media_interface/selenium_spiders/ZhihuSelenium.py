@@ -1,5 +1,5 @@
 #encoding=utf-8
-from BaseSelenium import BaseSelenium
+from .BaseSelenium import BaseSelenium
 import time,json
 from selenium import webdriver
 from selenium import webdriver
@@ -10,6 +10,7 @@ from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.keys import Keys
 
 class ZhihuSelenium(BaseSelenium):
+    name_platform = 'Zhihu'
     def __init__(self):
         super().__init__()
         self.name_selenium = 'Zhihu'

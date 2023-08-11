@@ -18,17 +18,26 @@ class ProduceArticles(object):
     def generat_fake_info(self):
 
         msg_info = MsgInfo()
+        msg_info.task_info.task_name = 'PublicArticle'
         msg_info.public_article.account_name = '18511400319'
-        msg_info.public_article.platform = 'zhihu'
+        msg_info.public_article.platform = 'Zhihu'
 
-        msg_info.generate_article.generate_title = '个人日记'
-        msg_info.generate_article.format_content = '个人日记'
+        msg_info.generate_article.generate_title = '个人日记234234324243234'
+        msg_info.generate_article.generate_content = '个人日记12323213123123'
+        msg_info.generate_article.format_content = '个人日记234234'
 
-        return msg_info
+
+
+        return msg_info.convert_to_json()
 
 
     def start_flow(self):
-        pass
+
+        for i in range(1):
+            one_msg = self.generat_fake_info()
+            list_msg = [one_msg]
+
+            self.art_producer.produce_msg_list(list_msg)
 
     
     

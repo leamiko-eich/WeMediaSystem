@@ -1,6 +1,6 @@
 #encoding=utf-8
 #encoding=utf-8
-from BaseSelenium import BaseSelenium
+from .BaseSelenium import BaseSelenium
 import time,json
 from selenium import webdriver
 from selenium import webdriver
