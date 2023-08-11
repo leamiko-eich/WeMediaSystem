@@ -25,5 +25,10 @@ dic_ex_queue_route = {
         "name_exchange": "ExUpdateNotionDb",
         "name_queue": "QueueUpdateNotionDb",
         "name_route_key": "RouteUpdateNotionDb"
+    },
+    "publish_article":{
+        "name_exchange": "ExPublishArticle",
+        "name_queue": "QueuePublishArticle",
+        "name_route_key": "RoutePublishArticle"
     }
 }

@@ -3,10 +3,7 @@ import rabbitpy
 import time
 import json
 import signal
-try:
-    from MsgConstDict import dic_ex_queue_route
-except Exception as e:
-    from mygpt.async_chat_system.MsgConstDict import dic_ex_queue_route 
+from .MsgConstDict import dic_ex_queue_route
 
 is_interrupted = False
 def signal_handler(sig, frame):
