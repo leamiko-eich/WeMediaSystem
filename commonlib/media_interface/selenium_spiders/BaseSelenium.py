@@ -134,14 +134,29 @@ class BaseSelenium(object):
 
     def get_chrome_options(self):
         chrome_options = webdriver.ChromeOptions()
-        chrome_options.add_argument("window-size=1024,768")
+        # chrome_options.add_argument("window-size=1024,768")
         chrome_options.add_argument('user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.107 Safari/537.36')
    
         chrome_options.add_argument('--no-sandbox')
         chrome_options.add_argument('--disable-dev-shm-usage')
-        chrome_options.add_argument('start-maximized')
+        # chrome_options.add_argument('start-maximized')
         chrome_options.add_argument("--disable-extensions")
         chrome_options.add_argument('--disable-browser-side-navigation')
-        chrome_options.add_argument('enable-automation')
+        # chrome_options.add_argument('enable-automation')
         chrome_options.add_experimental_option('excludeSwitches', ['enable-automation'])
         return chrome_options
+
+        
+    def switch_to_new_windows(self, driver):
+        all_handles = driver.window_handles
+        driver.switch_to.window(all_handles[-1])
+
+        time.sleep(2)
+
+
+    def scroll_to_bottom(self, driver):
+        document_height = driver.execute_script("return document.body.scrollHeight")
+        for i in range(int(document_height/150)):
+            print("往下滑动 %d" % (i))
+            driver.execute_script("window.scrollTo(0, {0})".format(i*150))
+            time.sleep(1)

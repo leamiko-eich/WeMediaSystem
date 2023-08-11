@@ -3,14 +3,19 @@ from BaseSelenium import BaseSelenium
 import time,json
 from selenium import webdriver
 from selenium import webdriver
-from selenium.webdriver.firefox.options import Options
+from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.firefox.firefox_profile import FirefoxProfile
+from selenium.webdriver.common.by import By
+from selenium.common.exceptions import TimeoutException
+from selenium.webdriver.common.keys import Keys
 
 class ZhihuSelenium(BaseSelenium):
     def __init__(self):
         super().__init__()
         self.name_selenium = 'Zhihu'
         self.login_url = 'https://www.zhihu.com'
+
+        self.driver = None
 
     def use_firefox(self):
 
@@ -69,7 +74,7 @@ class ZhihuSelenium(BaseSelenium):
         time.sleep(30)
         driver.quit()
 
-    def login_with_cookie(self, username = ''):
+    def get_chrome_options(self):
         chrome_options = Options()
     
         chrome_options.add_argument("window-size=1024,768")
@@ -77,11 +82,16 @@ class ZhihuSelenium(BaseSelenium):
    
         chrome_options.add_argument('--no-sandbox')
         chrome_options.add_argument('--disable-dev-shm-usage')
-        chrome_options.add_argument('start-maximized')
+        # chrome_options.add_argument('start-maximized')
         chrome_options.add_argument("--disable-extensions")
         chrome_options.add_argument('--disable-browser-side-navigation')
         chrome_options.add_argument('enable-automation')
         chrome_options.add_argument('--disable-infobars')
+        return chrome_options
+
+    def login_with_cookie(self, username = ''):
+
+        chrome_options = self.get_chrome_options()
 
         driver = webdriver.Chrome(options=chrome_options)
    
@@ -98,21 +108,59 @@ class ZhihuSelenium(BaseSelenium):
         cookie = f1.read()
         cookie = json.loads(cookie)
         for c in cookie:
-            print("add :", c)
             driver.add_cookie(c)
         # # 刷新页面
         time.sleep(2)
         driver.refresh()
+        time.sleep(2)
 
-        time.sleep(50)
+        self.driver = driver
+
  
 
 
     def publish_article(self, article_title, article_content):
+        chrome_options = self.get_chrome_options()
+
+        driver = self.driver
 
 
-        driver = webdriver.Chrome(options=options)
-        driver.get("https://www.zhihu.com")
+        button_write_article = driver.find_element(By.CSS_SELECTOR, 'button[title="写文章"]')
+        self.save_element_html(button_write_article, 'button_write_article.html')
+        button_write_article.click()
+
+        self.switch_to_new_windows(driver)
+
+        
+        input_title = driver.find_element(By.CLASS_NAME, 'Input')
+        self.save_element_html(input_title, 'input_title.html')
+        input_title.send_keys(article_title)
+        time.sleep(2)
+
+        # input_content = driver.find_element(By.CLASS_NAME, 'public-DraftStyleDefault-block public-DraftStyleDefault-ltr')
+        input_content = driver.find_element(By.CSS_SELECTOR, '.public-DraftStyleDefault-block.public-DraftStyleDefault-ltr')
+        self.save_element_html(input_content, 'input_content.html')
+        input_content.send_keys(article_content)
+        time.sleep(2)
+
+        self.scroll_to_bottom(driver)
+
+        # btn_add_topic = driver.find_element(By.CLASS_NAME, '.css-f7rzgf')
+        # self.save_element_html(btn_add_topic, 'btn_add_topic.html')
+        # btn_add_topic.click()
+        # time.sleep(2)
+# 
+        # input_topic = driver.find_element(By.CSS_SELECTOR, '.css-nvm401.Input-wrapper.QZcfWkCJoarhIYxlM_sG')
+        # self.save_element_html(input_topic, 'input_topic.html')
+        # input_topic.send_keys('日记')
+        # time.sleep(2)
+
+        btn_publish = driver.find_element(By.CSS_SELECTOR, '.Button.css-d0uhtl.Button--primary.Button--blue')
+        btn_publish.click()
+
+
+
+        
 
         time.sleep(30)
         return
@@ -135,8 +183,9 @@ class ZhihuSelenium(BaseSelenium):
         
 if __name__ == "__main__":
     obj_zhihu_selenium = ZhihuSelenium()
-    title = "1111"
-    content ="2222"
+    title = "个人笔记 - 今天怎么样"
+    content ="Good Good Study, Day Day Up. 是的"
     username = '18511400319'
     # obj_zhihu_selenium.login_with_password(username)
     obj_zhihu_selenium.login_with_cookie(username)
+    obj_zhihu_selenium.publish_article(title, content)
