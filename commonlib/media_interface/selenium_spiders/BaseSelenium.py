@@ -156,7 +156,7 @@ class BaseSelenium(object):
         all_handles = driver.window_handles
         driver.switch_to.window(all_handles[-1])
 
-        time.sleep(2)
+        time.sleep(4)
 
 
     def scroll_to_bottom(self, driver):

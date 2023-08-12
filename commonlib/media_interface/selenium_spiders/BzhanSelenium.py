@@ -12,13 +12,13 @@ from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.keys import Keys
 
-class DoubanSelenium(BaseSelenium):
-    name_platform = 'Douban'
+class BzhanSelenium(BaseSelenium):
+    name_platform = 'Bzhan'
     def __init__(self):
         super().__init__()
-        self.name_selenium = 'Douban'
+        self.name_selenium = 'Bzhan'
         self.login_url = 'https://accounts.douban.com/passport/login'
-        self.login_url = 'https://douban.com'
+        self.login_url = 'https://www.bilibili.com/'
 
         self.driver = None
 
@@ -83,24 +83,103 @@ class DoubanSelenium(BaseSelenium):
         chrome_options = self.get_chrome_options()
 
         driver = self.driver
+        print("type driver:", type(driver))
+        driver : webdriver.Chrome = driver
 
 
-        button_write_article = driver.find_element(By.CSS_SELECTOR, 'a[title="添加日记"]')
+        ## 点击投稿按钮
+        button_write_article = driver.find_element(By.CLASS_NAME, 'header-upload-entry__text')
         self.save_element_html(button_write_article, 'button_write_article.html')
         button_write_article.click()
 
+        
+        ## 切换到新窗口
+        print("prev url:",  driver.current_url)
+        self.switch_to_new_windows(driver)
+        print("after url:",  driver.current_url)
+        self.save_driver_html(driver, 'driver.html')
+
+
+        nav_bar = driver.find_element(By.CLASS_NAME, "upload-nav")  
+
+        # 根据链接文本内容定位到"专栏投稿"链接
+        column_link = nav_bar.find_element(By.LINK_TEXT, "专栏投稿")
+        column_link.click()
+        time.sleep(2)
+
+        self.save_driver_html(driver, 'driver.html')
 
         
-        input_title = driver.find_element(By.CLASS_NAME, 'editor-input')
-        self.save_element_html(input_title, 'input_title.html')
-        input_title.send_keys(article_title)
+        ## 寻找输入的iframe
+        iframe_box = driver.find_element(By.ID, 'edit-article-box')
+        self.save_element_html(iframe_box, 'iframe_box.html')
         time.sleep(2)
 
-        # input_content = driver.find_element(By.CLASS_NAME, 'public-DraftStyleDefault-block public-DraftStyleDefault-ltr')
-        input_content = driver.find_element(By.CSS_SELECTOR, '.notranslate.public-DraftEditor-content')
-        self.save_element_html(input_content, 'input_content.html')
-        input_content.send_keys(article_content)
+        ## 先获取iframe元素
+        iframe = iframe_box.find_element(By.CSS_SELECTOR, "iframe")
+        self.save_element_html(iframe, 'iframe_before.html')
+
+        # 切换到iframe 内部 
+        print("切换到内部")
+        driver.switch_to.frame(iframe)
+
+        # 等待iframe加载完成
+        time.sleep(5) 
+        self.save_driver_html(driver, 'iframe_innder.html')
+
+        ## 输入标题
+        input_title = driver.find_element(By.CSS_SELECTOR, '.ui-input-textarea.article-title')
+        self.save_element_html(input_title, 'input_title.html')
+        textarea = input_title.find_element(By.CSS_SELECTOR, 'textarea')
+        textarea.send_keys(article_title)
         time.sleep(2)
+
+        ## 输入内容- 获取iframe
+        # iframe_content = driver.find_element(By.CSS_SELECTOR, '.notranslate.public-DraftEditor-content')
+        iframe_content = driver.find_element(By.ID, 'ueditor_0')
+        self.save_element_html(iframe_content, 'iframe_content_outer.html')
+        # iframe_content.send_keys(content)
+        # driver.execute_script("arguments[0].value = '%s'" % (article_content), iframe_content)
+
+        print("切换到内部 -content")
+        driver.switch_to.frame(iframe_content)
+        time.sleep(5)
+        self.save_driver_html(driver, 'iframe_content_inner.html')
+
+
+        ## 寻找插入框
+        body_content = driver.find_element(By.CSS_SELECTOR, "body")
+        self.save_element_html(body_content, 'body_content.html')
+
+        # body_content.clear()
+        body_content.send_keys(article_content)
+        time.sleep(3)
+
+
+        ## 切回到ifram1
+        driver.switch_to.parent_frame()  
+        self.save_driver_html(driver, 'main_iframe1.html')
+        time.sleep(2)
+
+        ## 最后提交按钮
+        bnt_final_submit = driver.find_element(By.CSS_SELECTOR, '.ui-btn.blue-radius')
+        self.save_element_html(bnt_final_submit, 'bnt_final_submit.html')
+        bnt_final_submit.click()
+        time.sleep(2)
+
+        ## 切回到主页面
+        driver.switch_to.default_content()
+        self.save_driver_html(driver, 'main_default.html')
+        
+
+        time.sleep(60)
+        return
+
+        time.sleep(15)
+
+        
+
+        # iframe_content = driver.find_element(By.CLASS_NAME, 'public-DraftStyleDefault-block public-DraftStyleDefault-ltr')
 
 
         btn_publish = driver.find_element(By.CLASS_NAME, 'editor-extra-button-submit')
@@ -123,10 +202,10 @@ class DoubanSelenium(BaseSelenium):
         
         
 if __name__ == "__main__":
-    obj_douban = DoubanSelenium()
+    bzhan_selenium = BzhanSelenium()
     title = "个人笔记 - 今天怎么样"
     content ="Good Good Study, Day Day Up. 是的"
     username = '18511400319'
-    # obj_douban.login_with_password(username)
-    driver = obj_douban.login_with_cookie(username)
-    obj_douban.publish_article(title, content)
+    # bzhan_selenium.login_with_password(username)
+    driver = bzhan_selenium.login_with_cookie(username)
+    bzhan_selenium.publish_article(title, content)
