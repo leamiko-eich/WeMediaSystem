@@ -66,7 +66,7 @@ class WechatPublicSelenium(BaseSelenium):
         driver.switch_to.window(all_handles[-1])
 
         input_title = driver.find_element(By.ID, 'title')
-        driver.execute_script("arguments[0].value = 'aaaaa%s'" % (title), input_title)
+        driver.execute_script("arguments[0].value = '%s'" % (title), input_title)
         # input_title.send_keys(title)
         time.sleep(2)
 
@@ -78,7 +78,7 @@ class WechatPublicSelenium(BaseSelenium):
         input_content = driver.find_element(By.ID, 'ueditor_0')
         self.save_element_html(input_content, 'body.html')
         # input_content.send_keys(content)
-        driver.execute_script("arguments[0].value = 'bbbb%s'" % (content), input_content)
+        driver.execute_script("arguments[0].value = '%s'" % (content), input_content)
         time.sleep(2)
 
         
@@ -89,21 +89,21 @@ class WechatPublicSelenium(BaseSelenium):
         js = '''
         var iframe = document.getElementById('ueditor_0');
         var doc = iframe.contentDocument;  
-        var p1 = doc.createElement('p');
-        p1.textContent = 'Paragraph 1';
+        var p1 = doc.createElement('h1');
+        p1.textContent = 'Paragraph 11111 h1';
         var p2 = doc.createElement('p');
         p2.textContent = 'Hello world';
         doc.body.appendChild(p1);
         doc.body.appendChild(p2);
         '''
-        driver.execute_script(js)
+        # driver.execute_script(js)
 
         time.sleep(2)
 
         js = '''
         var iframe = document.getElementById('ueditor_0');
         var doc = iframe.contentDocument;  
-        var p1 = doc.createElement('p');
+        var p1 = doc.createElement('h1');
         p1.textContent = 'Paragraph 3';
         var p2 = doc.createElement('p');
         p2.textContent = 'Hello world222';
@@ -126,7 +126,7 @@ class WechatPublicSelenium(BaseSelenium):
         doc.body.appendChild(img);
         '''
 
-        driver.execute_script(insert_img) # 再插入到文档中
+        # driver.execute_script(insert_img) # 再插入到文档中
 
         self.save_driver_html(driver, 'driver.html')
 
@@ -234,19 +234,57 @@ class WechatPublicSelenium(BaseSelenium):
             # self.save_element_html(pic_select, 'pic_select.html')
             # pic_select.click()
 
-            time.sleep(10)
 
             ## 选择从正文选择图片
-            toolbar_select = driver.find_element(By.CLASS_NAME, 'pop-opr__group')
+            toolbar_select = driver.find_element(By.CSS_SELECTOR, '.pop-opr__group.pop-opr__group-select-cover.js_cover_null_pop.js_cover_opr')
             print("toolbar_select:", toolbar_select)
-            self.save_element_html(toolbar_select, 'toolbar_select.html')
+            self.save_element_html(toolbar_select, 'toolbar_before.html')
+            time.sleep(1)
 
-            time.sleep(10)
+            driver.execute_script("arguments[0].style.visibility = 'visible';", toolbar_select) 
+            time.sleep(1)
+
+
 
             ## 选择从正文选择图片
-            zhengwen_select = toolbar_select.find_element(By.CLASS_NAME, 'pop-opr__button')
+            #zhengwen_select = toolbar_select.find_element(By.CLASS_NAME, 'pop-opr__button')
+            #self.save_element_html(zhengwen_select, 'zhengwen_select.html')
+            #zhengwen_select.click()
+            #time.sleep(3)
+
+            ## 选择从图片库选择
+            zhengwen_select = toolbar_select.find_element(By.CLASS_NAME, 'js_imagedialog')
             self.save_element_html(zhengwen_select, 'zhengwen_select.html')
             zhengwen_select.click()
+            time.sleep(3)
+
+
+
+            ## 选择第1张图片
+            # first_image = driver.find_element(By.CSS_SELECTOR, '.appmsg_content_img.cover')
+            first_image = driver.find_element(By.CLASS_NAME, 'weui-desktop-img-picker__img-thumb')
+            self.save_element_html(first_image, 'first_image.html')
+            first_image.click()
+            time.sleep(3)
+
+            self.save_driver_html(driver, 'driver.html')
+
+            ## 选择下一步
+            btn_next = driver.find_element(By.CSS_SELECTOR, '.weui-desktop-btn.weui-desktop-btn_primary')
+            self.save_element_html(btn_next, 'btn_next_prev.html')
+            time.sleep(1)
+
+            driver.execute_script("arguments[0].style.visibility = 'visible';", btn_next) 
+            time.sleep(1)
+            self.save_element_html(btn_next, 'btn_next_after.html')
+
+            btn_next.click()
+            time.sleep(3)
+
+            ## 点击完成
+            btn_complete = driver.find_element(By.CSS_SELECTOR, '.weui-desktop-btn.weui-desktop-btn_primary')
+            self.save_element_html(btn_complete, 'btn_complete.html')
+            btn_complete.click()
             time.sleep(3)
         
 
@@ -262,4 +300,4 @@ if __name__ == '__main__':
     # obj_wechat_public.login_with_password(username)
 
     obj_wechat_public.login_with_cookie(username)
-    obj_wechat_public.public_article('title', 'content')
+    obj_wechat_public.public_article('每天日记记录 0812', '早上，起床，洗漱，吃饭，上班，下班，吃饭，睡觉。 从今天起开始记录日记')

@@ -98,7 +98,7 @@ class BaseSelenium(object):
         cookie = f1.read()
         cookie = json.loads(cookie)
         for c in cookie:
-            print("add :", c)
+            # print("add :", c)
             driver.add_cookie(c)
         # # 刷新页面
         time.sleep(2)
