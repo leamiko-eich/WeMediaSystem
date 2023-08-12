@@ -7,7 +7,11 @@ from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.keys import Keys
-from .BaseSelenium import BaseSelenium
+try:
+    from .BaseSelenium import BaseSelenium
+except Exception as e:
+    from BaseSelenium import BaseSelenium
+
  
  
 class Crawler(BaseSelenium):
@@ -160,7 +164,15 @@ class Crawler(BaseSelenium):
         time.sleep(2)
         driver.refresh()
 
-        time.sleep(50)
+
+        return driver
+
+    def test_js(self, driver):
+        driver.get("http://www.baidu.com")
+        driver.execute_script('document.getElementById("kw").value = "test"')
+        time.sleep(2)
+        driver.execute_script('document.getElementById("su").click()')
+        time.sleep(2)
  
 
         
@@ -170,6 +182,7 @@ if __name__ == '__main__':
     username = '18511400319'
  
     # ob_Crawler.gather()
-    ob_Crawler.load_user_pass()
+    # ob_Crawler.load_user_pass()
     # ob_Crawler.login_with_password(username)
-    ob_Crawler.login_with_cookie(username)
+    driver = ob_Crawler.login_with_cookie(username)
+    ob_Crawler.test_js(driver)

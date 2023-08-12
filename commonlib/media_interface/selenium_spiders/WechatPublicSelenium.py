@@ -1,12 +1,18 @@
 #encoding=utf-8
 #encoding=utf-8
-from .BaseSelenium import BaseSelenium
+__package__ == 'selenium_spiders'
+try:
+    from BaseSelenium import BaseSelenium
+except Exception as e:
+    from .BaseSelenium import BaseSelenium
+
 import time,json
 from selenium import webdriver
 from selenium import webdriver
 from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.firefox.firefox_profile import FirefoxProfile
 from selenium.webdriver.common.by import By
+from selenium.webdriver import ActionChains
 
 class WechatPublicSelenium(BaseSelenium):
     def __init__(self):
@@ -60,7 +66,8 @@ class WechatPublicSelenium(BaseSelenium):
         driver.switch_to.window(all_handles[-1])
 
         input_title = driver.find_element(By.ID, 'title')
-        input_title.send_keys(title)
+        driver.execute_script("arguments[0].value = 'aaaaa%s'" % (title), input_title)
+        # input_title.send_keys(title)
         time.sleep(2)
 
         input_author = driver.find_element(By.ID, 'author')
@@ -69,37 +76,68 @@ class WechatPublicSelenium(BaseSelenium):
 
         # input_content = driver.find_element(By.CLASS_NAME, 'rich_media_content')
         input_content = driver.find_element(By.ID, 'ueditor_0')
-        print("input_content: ", input_content)
         self.save_element_html(input_content, 'body.html')
-        input_content.send_keys(content)
+        # input_content.send_keys(content)
+        driver.execute_script("arguments[0].value = 'bbbb%s'" % (content), input_content)
         time.sleep(2)
 
+        
+        # 获取iframe
+        # iframe = driver.find_element_by_id("ueditor_0")
 
-        ## 正文插入图片        
-        button_image = driver.find_element(By.CLASS_NAME, 'tpl_item')
-        self.save_element_html(button_image, 'button_image.html')
-        button_image.click()
+        # 执行js插入内容 
+        js = '''
+        var iframe = document.getElementById('ueditor_0');
+        var doc = iframe.contentDocument;  
+        var p1 = doc.createElement('p');
+        p1.textContent = 'Paragraph 1';
+        var p2 = doc.createElement('p');
+        p2.textContent = 'Hello world';
+        doc.body.appendChild(p1);
+        doc.body.appendChild(p2);
+        '''
+        driver.execute_script(js)
+
         time.sleep(2)
 
-        ## 本地图片annual
-        button_image_db = driver.find_elements(By.CLASS_NAME, 'tpl_dropdown_menu_item')[0]
-        self.save_element_html(button_image_db, 'button_image_db.html')
-        button_image_db.click()
-        time.sleep(2)
+        js = '''
+        var iframe = document.getElementById('ueditor_0');
+        var doc = iframe.contentDocument;  
+        var p1 = doc.createElement('p');
+        p1.textContent = 'Paragraph 3';
+        var p2 = doc.createElement('p');
+        p2.textContent = 'Hello world222';
+        doc.body.appendChild(p1);
+        doc.body.appendChild(p2);
+        '''
+        # driver.execute_script(js)
+        # time.sleep(2)
 
+        # 构造图片元素
 
-        ## 本地选择图片
-        image_path = "H:\\1.jpg"
+        # 插入图片 
+        insert_img = '''
+        var img = document.createElement('img');
+        img.src = 'https://5b0988e595225.cdn.sohucs.com/images/20200307/2fcefe1c46904239aedb0b0e0af2a611.jpeg';
+        img.width = 200;
 
-        upload_input = button_image_db.find_element(By.NAME, 'file')
-        self.save_element_html(upload_input, 'upload.html')
-        # driver.execute_script("document.getElementsByName('file')[0].value = '%s'" % (image_path))
-        upload_input.send_keys(image_path)
-        time.sleep(3)
+        var iframe = document.getElementById('ueditor_0');
+        var doc = iframe.contentDocument;
+        doc.body.appendChild(img);
+        '''
 
-        print("关闭窗口", len(driver.window_handles))
-        if len(driver.window_handles) > 1:
-           driver.switch_to.window(driver.window_handles[-1]).close()
+        driver.execute_script(insert_img) # 再插入到文档中
+
+        self.save_driver_html(driver, 'driver.html')
+
+        # body_input = driver.find_element(By.CSS_SELECTOR, '.view.rich_media_content.autoTypeSetting24psection')
+        #body_input = input_content.find_element(By.CSS_SELECTOR, '.view.rich_media_content.autoTypeSetting24psection')
+        #self.save_element_html(body_input, 'body_input.html')
+
+        # driver.execute_script("var body_input=document.querySelector('.view.rich_media_content.autoTypeSetting24psection'); body_input.innerHTML = 'aaaa%s'" % (content))
+
+        # time.sleep(10)
+
 
         time.sleep(3)
 
@@ -172,18 +210,38 @@ class WechatPublicSelenium(BaseSelenium):
         
 
 
-        flag_charu_fengmian = False
+        flag_charu_fengmian = True
         if flag_charu_fengmian:
             ## 选择图片按钮
-            pic_select = driver.find_element(By.ID, 'js_cover_area')
-            print("pic_select:", pic_select)
-            self.save_element_html(pic_select, 'pic_select.html')
-            pic_select.click()
+
+            
+            # 找到封面区域元素
+            # cover_area = driver.find_element_by_class_name('js_cover_btn_area')
+            cover_area = driver.find_element(By.ID, 'js_cover_area')
+            self.save_element_html(cover_area, 'pic_select_before.html')
+
+            # 移动到元素上,显示按钮
+            actions = ActionChains(driver)  
+            actions.move_to_element(cover_area)
+            time.sleep(1)
+            actions.perform()
+            time.sleep(1)
+            cover_area = driver.find_element(By.ID, 'js_cover_area')
+            self.save_element_html(cover_area, 'pic_select_after.html')
+
+            # pic_select = driver.find_element(By.ID, 'js_cover_area')
+            # print("pic_select:", pic_select)
+            # self.save_element_html(pic_select, 'pic_select.html')
+            # pic_select.click()
+
+            time.sleep(10)
 
             ## 选择从正文选择图片
             toolbar_select = driver.find_element(By.CLASS_NAME, 'pop-opr__group')
             print("toolbar_select:", toolbar_select)
             self.save_element_html(toolbar_select, 'toolbar_select.html')
+
+            time.sleep(10)
 
             ## 选择从正文选择图片
             zhengwen_select = toolbar_select.find_element(By.CLASS_NAME, 'pop-opr__button')
@@ -204,5 +262,4 @@ if __name__ == '__main__':
     # obj_wechat_public.login_with_password(username)
 
     obj_wechat_public.login_with_cookie(username)
-
     obj_wechat_public.public_article('title', 'content')
