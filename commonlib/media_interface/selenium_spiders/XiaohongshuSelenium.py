@@ -1,5 +1,8 @@
 #encoding=utf-8
-from .BaseSelenium import BaseSelenium
+try:
+    from .BaseSelenium import BaseSelenium
+except Exception as e:
+    from BaseSelenium import BaseSelenium
 from selenium import webdriver
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.common.exceptions import NoSuchElementException

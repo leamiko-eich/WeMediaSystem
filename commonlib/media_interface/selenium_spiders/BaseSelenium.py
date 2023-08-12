@@ -16,6 +16,7 @@ class BaseSelenium(object):
         self.name_selenium = 'base'
         self.dict_user_pass = {}
         self.driver = None
+        self.login_url = ''
 
         chrome_options = webdriver.ChromeOptions()
         #path_driver = "H:\driver\chromedriver.exe"
@@ -86,6 +87,7 @@ class BaseSelenium(object):
         driver = webdriver.Chrome(options=chrome_options)
    
         time.sleep(2)
+        print("login_url:%s" % (self.login_url))
         logurl = self.login_url
     
         #登录前清楚所有cookie

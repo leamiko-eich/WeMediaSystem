@@ -1,5 +1,8 @@
 #encoding=utf-8
-from .BaseSelenium import BaseSelenium
+try:
+    from .BaseSelenium import BaseSelenium
+except Exception as e:
+    from BaseSelenium import BaseSelenium
 import time,json
 from selenium import webdriver
 from selenium import webdriver
@@ -9,12 +12,13 @@ from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.keys import Keys
 
-class ZhihuSelenium(BaseSelenium):
-    name_platform = 'Zhihu'
+class DoubanSelenium(BaseSelenium):
+    name_platform = 'Douban'
     def __init__(self):
         super().__init__()
-        self.name_selenium = 'Zhihu'
-        self.login_url = 'https://www.zhihu.com'
+        self.name_selenium = 'Douban'
+        self.login_url = 'https://accounts.douban.com/passport/login'
+        self.login_url = 'https://douban.com'
 
         self.driver = None
 
@@ -47,10 +51,10 @@ class ZhihuSelenium(BaseSelenium):
           """
         })
 
+        driver.delete_all_cookies()
         ## 临时使用扫码进行第1次登录解决
-        driver.get("https://www.zhihu.com")
+        driver.get(self.login_url)
 
-        # driver.delete_all_cookies()
 
         time.sleep(30)
         filename = "%s_%s" % (self.name_selenium, username)
@@ -74,35 +78,6 @@ class ZhihuSelenium(BaseSelenium):
         chrome_options.add_argument('--disable-infobars')
         return chrome_options
 
-    def login_with_cookie(self, username = ''):
-
-        chrome_options = self.get_chrome_options()
-
-        driver = webdriver.Chrome(options=chrome_options)
-   
-        time.sleep(2)
-        logurl = self.login_url
-    
-        #登录前清楚所有cookie
-        driver.delete_all_cookies()
-        driver.get(logurl)
-        time.sleep(2)
-    
-        filename = "%s_%s" % (self.name_selenium, username)
-        f1 = open('data/%s.json' % (filename))
-        cookie = f1.read()
-        cookie = json.loads(cookie)
-        for c in cookie:
-            driver.add_cookie(c)
-        # # 刷新页面
-        time.sleep(2)
-        driver.refresh()
-        time.sleep(2)
-
-        self.driver = driver
-
- 
-
 
     def publish_article(self, article_title, article_content):
         chrome_options = self.get_chrome_options()
@@ -110,25 +85,22 @@ class ZhihuSelenium(BaseSelenium):
         driver = self.driver
 
 
-        button_write_article = driver.find_element(By.CSS_SELECTOR, 'button[title="写文章"]')
+        button_write_article = driver.find_element(By.CSS_SELECTOR, 'a[title="添加日记"]')
         self.save_element_html(button_write_article, 'button_write_article.html')
         button_write_article.click()
 
-        self.switch_to_new_windows(driver)
 
         
-        input_title = driver.find_element(By.CLASS_NAME, 'Input')
+        input_title = driver.find_element(By.CLASS_NAME, 'editor-input')
         self.save_element_html(input_title, 'input_title.html')
         input_title.send_keys(article_title)
         time.sleep(2)
 
         # input_content = driver.find_element(By.CLASS_NAME, 'public-DraftStyleDefault-block public-DraftStyleDefault-ltr')
-        input_content = driver.find_element(By.CSS_SELECTOR, '.public-DraftStyleDefault-block.public-DraftStyleDefault-ltr')
+        input_content = driver.find_element(By.CSS_SELECTOR, '.notranslate.public-DraftEditor-content')
         self.save_element_html(input_content, 'input_content.html')
         input_content.send_keys(article_content)
         time.sleep(2)
-
-        self.scroll_to_bottom(driver)
 
         # btn_add_topic = driver.find_element(By.CLASS_NAME, '.css-f7rzgf')
         # self.save_element_html(btn_add_topic, 'btn_add_topic.html')
@@ -140,8 +112,16 @@ class ZhihuSelenium(BaseSelenium):
         # input_topic.send_keys('日记')
         # time.sleep(2)
 
-        btn_publish = driver.find_element(By.CSS_SELECTOR, '.Button.css-d0uhtl.Button--primary.Button--blue')
+        btn_publish = driver.find_element(By.CLASS_NAME, 'editor-extra-button-submit')
         btn_publish.click()
+        time.sleep(2)
+
+        box_publish = driver.find_element(By.CLASS_NAME, 'editor-popup-setting-submit')
+        self.save_element_html(box_publish,'box_publish.html')
+
+        final_pub_btn = box_publish.find_element(By.CSS_SELECTOR, 'button[type="submit"]')
+        self.save_element_html(final_pub_btn,'final_pub_bnt.html')
+        final_pub_btn.click()
 
 
 
@@ -149,28 +129,13 @@ class ZhihuSelenium(BaseSelenium):
 
         time.sleep(30)
         return
-        # Click the "写文章" button
-        write_article_button = self.driver.find_element_by_xpath("//button[@class='Button WriteIndex-articleButton Button--primary Button--blue']")
-        write_article_button.click()
-        
-        # Input the article title
-        title_input = self.driver.find_element_by_xpath("//input[@class='Input WriteIndex-titleInput']")
-        title_input.send_keys(article_title)
-        
-        # Input the article content
-        content_input = self.driver.find_element_by_xpath("//div[@class='public-DraftEditor-content']")
-        content_input.send_keys(article_content)
-        
-        # Click the "发布" button
-        publish_button = self.driver.find_element_by_xpath("//button[@class='Button PublishPanel-submitButton Button--primary Button--blue']")
-        publish_button.click( )
         
         
 if __name__ == "__main__":
-    obj_zhihu_selenium = ZhihuSelenium()
+    obj_douban = DoubanSelenium()
     title = "个人笔记 - 今天怎么样"
     content ="Good Good Study, Day Day Up. 是的"
     username = '18511400319'
-    # obj_zhihu_selenium.login_with_password(username)
-    obj_zhihu_selenium.login_with_cookie(username)
-    obj_zhihu_selenium.publish_article(title, content)
+    # obj_douban.login_with_password(username)
+    driver = obj_douban.login_with_cookie(username)
+    obj_douban.publish_article(title, content)

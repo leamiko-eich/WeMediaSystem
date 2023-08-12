@@ -126,7 +126,7 @@ class WechatPublicSelenium(BaseSelenium):
         doc.body.appendChild(img);
         '''
 
-        # driver.execute_script(insert_img) # 再插入到文档中
+        driver.execute_script(insert_img) # 再插入到文档中
 
         self.save_driver_html(driver, 'driver.html')
 
@@ -210,8 +210,9 @@ class WechatPublicSelenium(BaseSelenium):
         
 
 
-        flag_charu_fengmian = True
-        if flag_charu_fengmian:
+        ### 使用正文中的图片进行插入，插入后，显示server不能用
+        flag_charu_fengmian_by_imag_in_conten = True
+        if flag_charu_fengmian_by_imag_in_conten:
             ## 选择图片按钮
 
             
@@ -229,11 +230,6 @@ class WechatPublicSelenium(BaseSelenium):
             cover_area = driver.find_element(By.ID, 'js_cover_area')
             self.save_element_html(cover_area, 'pic_select_after.html')
 
-            # pic_select = driver.find_element(By.ID, 'js_cover_area')
-            # print("pic_select:", pic_select)
-            # self.save_element_html(pic_select, 'pic_select.html')
-            # pic_select.click()
-
 
             ## 选择从正文选择图片
             toolbar_select = driver.find_element(By.CSS_SELECTOR, '.pop-opr__group.pop-opr__group-select-cover.js_cover_null_pop.js_cover_opr')
@@ -247,34 +243,37 @@ class WechatPublicSelenium(BaseSelenium):
 
 
             ## 选择从正文选择图片
-            #zhengwen_select = toolbar_select.find_element(By.CLASS_NAME, 'pop-opr__button')
-            #self.save_element_html(zhengwen_select, 'zhengwen_select.html')
-            #zhengwen_select.click()
-            #time.sleep(3)
-
-            ## 选择从图片库选择
-            zhengwen_select = toolbar_select.find_element(By.CLASS_NAME, 'js_imagedialog')
+            zhengwen_select = toolbar_select.find_element(By.CLASS_NAME, 'pop-opr__button')
             self.save_element_html(zhengwen_select, 'zhengwen_select.html')
             zhengwen_select.click()
             time.sleep(3)
 
+            ## 选择从图片库选择
+            #zhengwen_select = toolbar_select.find_element(By.CLASS_NAME, 'js_imagedialog')
+            #self.save_element_html(zhengwen_select, 'zhengwen_select.html')
+            #zhengwen_select.click()
+            #time.sleep(3)
+
 
 
             ## 选择第1张图片
-            # first_image = driver.find_element(By.CSS_SELECTOR, '.appmsg_content_img.cover')
-            first_image = driver.find_element(By.CLASS_NAME, 'weui-desktop-img-picker__img-thumb')
+            first_image = driver.find_element(By.CSS_SELECTOR, '.appmsg_content_img.cover')
+            # first_image = driver.find_element(By.CLASS_NAME, 'weui-desktop-img-picker__img-thumb')
             self.save_element_html(first_image, 'first_image.html')
             first_image.click()
             time.sleep(3)
 
             self.save_driver_html(driver, 'driver.html')
 
+
+
             ## 选择下一步
             btn_next = driver.find_element(By.CSS_SELECTOR, '.weui-desktop-btn.weui-desktop-btn_primary')
             self.save_element_html(btn_next, 'btn_next_prev.html')
             time.sleep(1)
 
-            driver.execute_script("arguments[0].style.visibility = 'visible';", btn_next) 
+            driver.execute_script("arguments[0].disabled = false;", btn_next)
+            # driver.execute_script("arguments[0].style.visibility = 'visible';", btn_next) 
             time.sleep(1)
             self.save_element_html(btn_next, 'btn_next_after.html')
 

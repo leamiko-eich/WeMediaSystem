@@ -147,11 +147,10 @@ class Crawler(BaseSelenium):
         wait = WebDriverWait(driver, 1)
     
         ##登录百度知道
-        logurl = 'https://zhidao.baidu.com/'
     
         #登录前清楚所有cookie
         driver.delete_all_cookies()
-        driver.get(logurl)
+        driver.get(self.logurl)
         time.sleep(2)
     
         f1 = open('data/%s.json' % (username))
