@@ -234,32 +234,27 @@ class Crawler(BaseSelenium):
     def public_article(self, title, content, author='Lengxiao'):
         print('here is good!')
         driver: webdriver.Chrome = self.get_driver()
+        self.login_url = 'https://mp.toutiao.com/profile_v4/graphic/publish?from=toutiao_pc'
         driver.get(self.login_url)
         time.sleep(3)
-        element = driver.find_element(By.CLASS_NAME, 'publisher-icon')
-        # 使用ActionChains模拟鼠标点击
-        actions = ActionChains(driver)
-        actions.move_to_element(element).perform()
 
-        # 等待子菜单可见
-        wait = WebDriverWait(driver, 10)
-        submenu = wait.until(EC.visibility_of_element_located((By.CLASS_NAME, 'publish-list')))
+        # 这部分等江峰解决，如何虚拟点击发布文章按钮。
 
-        # 找到并点击'写文章'选项
-        write_article_option = submenu.find_element(By.XPATH, '//a[text()="写文章"]')
-        write_article_option.click()
-        ## 切换窗口
-        all_handles = driver.window_handles
-        driver.switch_to.window(all_handles[-1])
-
-        input_title = driver.find_element(By.ID, 'title')
+        input_title = driver.find_element(By.CSS_SELECTOR, 'div.publish-editor-title-inner textarea')
         input_title.send_keys(title)
         time.sleep(2)
 
-        input_author = driver.find_element(By.ID, 'author')
-        input_author.send_keys(author)
+
+        # 输入正文内容
+        div_element = driver.find_element(By.CSS_SELECTOR, 'div.ProseMirror')
+        div_element.send_keys(content)
         time.sleep(2)
 
+        #'是否单标题'
+        single_title =  driver.find_element(By.CLASS_NAME,'byte-radio-inner checked')
+        single_title.click()
+        time.sleep(2)
+        # 'byte-radio-inner checked'
         # input_content = driver.find_element(By.CLASS_NAME, 'rich_media_content')
         input_content = driver.find_element(By.ID, 'ueditor_0')
         print("input_content: ", input_content)
