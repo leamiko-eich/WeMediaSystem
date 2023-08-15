@@ -232,7 +232,6 @@ class Crawler(BaseSelenium):
         return author_articles
 
     def public_article(self, title, content, author='Lengxiao'):
-        print('here is good!')
         driver: webdriver.Chrome = self.get_driver()
         self.login_url = 'https://mp.toutiao.com/profile_v4/graphic/publish?from=toutiao_pc'
         driver.get(self.login_url)
@@ -251,10 +250,17 @@ class Crawler(BaseSelenium):
         time.sleep(2)
 
         #'是否单标题'
-        single_title =  driver.find_element(By.CLASS_NAME,'byte-radio-inner checked')
+        single_title =  driver.find_element(By.CSS_SELECTOR,'div.byte-radio-inner ')
         single_title.click()
         time.sleep(2)
-        # 'byte-radio-inner checked'
+
+        # 添加封面图片
+        svg_element = driver.find_element(By.CSS_SELECTOR, 'svg.add-icon.byte-icon.byte-icon-plus')
+        svg_element.click()
+        time.sleep(2)
+
+        # 模拟点击操作
+        svg_element.click()
         # input_content = driver.find_element(By.CLASS_NAME, 'rich_media_content')
         input_content = driver.find_element(By.ID, 'ueditor_0')
         print("input_content: ", input_content)
