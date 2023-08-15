@@ -65,7 +65,7 @@ class BaseSelenium(object):
         return self.driver
 
 
-    def login_with_cookie(self, username = ''):
+    def login_with_cookie(self, username = '', wait_time=0):
         chrome_options = webdriver.ChromeOptions()
     
         # chrome_options.add_argument("window-size=1024,768")
@@ -78,11 +78,8 @@ class BaseSelenium(object):
         chrome_options.add_argument('--disable-browser-side-navigation')
         chrome_options.add_argument('enable-automation')
         chrome_options.add_argument('--disable-infobars')
-        flag_close_file_dialog = True
-        if flag_close_file_dialog:
-            pass
-        
-            # chrome_options.add_experimental_option('prefs', {'download.prompt_for_download': False})
+        if self.name_platform == 'Xiaohongshu':
+            chrome_options.add_argument("--disable-blink-features=AutomationControlled")
 
         driver = webdriver.Chrome(options=chrome_options)
    
@@ -94,7 +91,9 @@ class BaseSelenium(object):
         driver.delete_all_cookies()
         driver.get(logurl)
         time.sleep(2)
-    
+
+
+        print("等待-加载cookie")    
         filename = "%s_%s" % (self.name_selenium, username)
         f1 = open('data/%s.json' % (filename))
         cookie = f1.read()
@@ -105,10 +104,11 @@ class BaseSelenium(object):
         # # 刷新页面
         time.sleep(2)
         driver.refresh()
+        print("cookie-加载完毕")
 
         self.set_driver(driver)
 
-        # time.sleep(50)
+        time.sleep(wait_time)
         return driver
 
 
@@ -149,6 +149,8 @@ class BaseSelenium(object):
         chrome_options.add_argument('--disable-browser-side-navigation')
         # chrome_options.add_argument('enable-automation')
         chrome_options.add_experimental_option('excludeSwitches', ['enable-automation'])
+        if self.name_platform == 'Xiaohongshu':
+            chrome_options.add_argument("--disable-blink-features=AutomationControlled")
         return chrome_options
 
         
