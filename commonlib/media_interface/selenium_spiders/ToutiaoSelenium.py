@@ -247,138 +247,42 @@ class Crawler(BaseSelenium):
         # 输入正文内容
         div_element = driver.find_element(By.CSS_SELECTOR, 'div.ProseMirror')
         div_element.send_keys(content)
-        time.sleep(2)
-
+        time.sleep(4)
+        driver.execute_script("window.scrollBy(0, 500);")  # 500为滚动的像素值
         #'是否单标题'
-        single_title =  driver.find_element(By.CSS_SELECTOR,'div.byte-radio-inner ')
-        single_title.click()
-        time.sleep(2)
+        single_title_input = driver.find_element(By.CSS_SELECTOR, 'div.byte-radio-inner ')
+        single_title_input.click()
+        time.sleep(4)
 
         # 添加封面图片
         svg_element = driver.find_element(By.CSS_SELECTOR, 'svg.add-icon.byte-icon.byte-icon-plus')
         svg_element.click()
+        time.sleep(4)
+
+
+        input_element = driver.find_element(By.CSS_SELECTOR, 'input[type="file"]')
+        # 输入文件路径到<input>元素
+        file_path = "C:/Users/chongqingwei/Desktop/1.jpg"  # 本地文件的路径
+        input_element.send_keys(file_path)
+        time.sleep(2)
+        #上传完以后点击确定按钮
+        button_element = driver.find_element(By.CSS_SELECTOR, 'button[data-e2e="imageUploadConfirm-btn"]')
+        button_element.click()
         time.sleep(2)
 
-        # 模拟点击操作
-        svg_element.click()
-        # input_content = driver.find_element(By.CLASS_NAME, 'rich_media_content')
-        input_content = driver.find_element(By.ID, 'ueditor_0')
-        print("input_content: ", input_content)
-        self.save_element_html(input_content, 'body.html')
-        input_content.send_keys(content)
+        # 定位到预览并发布按钮的元素
+        preview_publish_button = driver.find_element(By.XPATH, '//button[contains(span, "预览并发布")]')
+
+        preview_publish_button.click()
         time.sleep(2)
-
-        ## 正文插入图片
-        button_image = driver.find_element(By.CLASS_NAME, 'tpl_item')
-        self.save_element_html(button_image, 'button_image.html')
-        button_image.click()
+        # 定位到确认发布按钮的元素
+        confirm_publish_button = driver.find_element(By.XPATH, '//button[contains(span, "确认发布")]')
+        # 点击确认发布按钮
+        confirm_publish_button.click()
         time.sleep(2)
-
-        ## 本地图片annual
-        button_image_db = driver.find_elements(By.CLASS_NAME, 'tpl_dropdown_menu_item')[0]
-        self.save_element_html(button_image_db, 'button_image_db.html')
-        button_image_db.click()
-        time.sleep(2)
-
-        ## 本地选择图片
-        image_path = "H:\\1.jpg"
-        upload_input = button_image_db.find_element(By.NAME, 'file')
-        self.save_element_html(upload_input, 'upload.html')
-        # driver.execute_script("document.getElementsByName('file')[0].value = '%s'" % (image_path))
-        upload_input.send_keys(image_path)
-        time.sleep(3)
-
-        print("关闭窗口", len(driver.window_handles))
-        if len(driver.window_handles) > 1:
-            driver.switch_to.window(driver.window_handles[-1]).close()
-
-        time.sleep(3)
-
-        flag_use_tupianku = False
-
-        if flag_use_tupianku:
-            ## 图片库选择
-            button_image_db = driver.find_elements(By.CLASS_NAME, 'tpl_dropdown_menu_item')[1]
-            self.save_element_html(button_image_db, 'button_image_db.html')
-            button_image_db.click()
-            time.sleep(2)
-
-            ## 选择第1张图片
-            button_first_image = driver.find_element(By.CLASS_NAME, 'weui-desktop-img-picker__item')
-            if button_first_image.is_displayed():
-                print("button kejian")
-            else:
-                print("button no kejian")
-            self.save_element_html(button_first_image, 'button_first_image.html')
-            button_first_image.click()
-            time.sleep(2)
-
-            # dialog = driver.find_element(By.CLASS_NAME, 'weui-desktop-dialog')
-            # print("dialog:", dialog)
-            # self.save_element_html(dialog, 'dialog.html')
-            # driver.switch_to.frame(dialog)
-            # time.sleep(3)
-
-            button_dialog = driver.find_element(By.CLASS_NAME, 'weui-desktop-dialog__ft')
-            self.save_element_html(button_dialog)
-            if button_dialog.is_displayed():
-                print("dialog kejian")
-            else:
-                print("dialog  00 kejian")
-            time.sleep(2)
-
-            ## 确认
-            button_make_sure = driver.find_element(By.CLASS_NAME, 'weui-desktop-btn_wrp')
-            # button_make_sure = button_make_sure.find_element(By.CLASS_NAME, 'weui-desktop-btn')
-            print("button_make_sure:", button_make_sure)
-            if button_make_sure.is_displayed():
-                print("1元素可见")
-            else:
-                print("2元素no可见")
-            self.save_element_html(button_make_sure, 'button_make_sure.html')
-            time.sleep(2)
-            # driver.execute_script("arguments[0].click();", button_make_sure)
-            # ret = driver.execute_script("$(arguments[0]).click()", button_make_sure)
-            # driver.execute_script("arguments[0].scrollIntoView();", button_make_sure)
-            print("修改display属性")
-            driver.execute_script("arguments[0].style.display = 'block';", button_make_sure)
-            time.sleep(30)
-            time.sleep(2)
-            if button_make_sure.is_displayed():
-                print("元素可见")
-            else:
-                print("元素no可见")
-            ret = button_make_sure.click()
-            print("ret:", ret)
-            time.sleep(2)
-
-        document_height = driver.execute_script("return document.body.scrollHeight")
-        for i in range(int(document_height / 150)):
-            print("往下滑动 %d" % (i))
-            driver.execute_script("window.scrollTo(0, {0})".format(i * 150))
-            time.sleep(1)
-
-        flag_charu_fengmian = False
-        if flag_charu_fengmian:
-            ## 选择图片按钮
-            pic_select = driver.find_element(By.ID, 'js_cover_area')
-            print("pic_select:", pic_select)
-            self.save_element_html(pic_select, 'pic_select.html')
-            pic_select.click()
-
-            ## 选择从正文选择图片
-            toolbar_select = driver.find_element(By.CLASS_NAME, 'pop-opr__group')
-            print("toolbar_select:", toolbar_select)
-            self.save_element_html(toolbar_select, 'toolbar_select.html')
-
-            ## 选择从正文选择图片
-            zhengwen_select = toolbar_select.find_element(By.CLASS_NAME, 'pop-opr__button')
-            self.save_element_html(zhengwen_select, 'zhengwen_select.html')
-            zhengwen_select.click()
-            time.sleep(3)
-
-        time.sleep(50)
         driver.quit()
+
+
 
 
 if __name__ == '__main__':
