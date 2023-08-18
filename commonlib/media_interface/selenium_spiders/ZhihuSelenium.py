@@ -1,5 +1,5 @@
 #encoding=utf-8
-from .BaseSelenium import BaseSelenium
+from BaseSelenium import BaseSelenium
 import time,json
 from selenium import webdriver
 from selenium import webdriver
@@ -170,7 +170,7 @@ if __name__ == "__main__":
     obj_zhihu_selenium = ZhihuSelenium()
     title = "个人笔记 - 今天怎么样"
     content ="Good Good Study, Day Day Up. 是的"
-    username = '18511400319'
-    # obj_zhihu_selenium.login_with_password(username)
+    username = '251132021@qq.com'
+    obj_zhihu_selenium.login_with_password(username)
     obj_zhihu_selenium.login_with_cookie(username)
     obj_zhihu_selenium.publish_article(title, content)
