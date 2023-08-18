@@ -5,12 +5,13 @@ import pickle
 try:
     from .MsgConstDict import dic_ex_queue_route
 except Exception as e:
-    from mygpt.async_chat_system.MsgConstDict import dic_ex_queue_route 
+    from MsgConstDict import dic_ex_queue_route 
 
 
 class MsgProducer(object):
     def __init__(self, name_exchange='test_change', name_queue='test_queue', name_route_key='test_route_key', key_ex_queue_route=""):
-        self.rabbit_url = 'amqp://admin2:ydl1qaw32@23.251.52.227:5672/%2F'
+        # self.rabbit_url = 'amqp://admin2:ydl1qaw32@23.251.52.227:5672/%2F'
+        self.rabbit_url = 'amqp://admin:123456@23.251.55.170:5672/%2F'
 
         self.name_exchange = name_exchange
         self.name_queue = name_queue
@@ -59,7 +60,7 @@ class MsgProducer(object):
         
 
 if __name__ == "__main__":
-    obj_producer = MsgProducer()
+    # obj_producer = MsgProducer()
 
     obj_producer = MsgProducer(name_exchange="ExRecallArt", name_queue="QueueInsertDb", name_route_key="RouteRecall2Insert")
     obj_producer.start_flow()

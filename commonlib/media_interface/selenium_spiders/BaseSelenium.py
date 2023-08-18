@@ -122,6 +122,7 @@ class BaseSelenium(object):
         jsonCookies = json.dumps(cookie)
         with open('data/%s.json' % (filename), 'w') as f:
             f.write(jsonCookies)
+        print("cookie-保存完毕")
 
     def load_user_pass(self, path_config = 'config/user_pass.ini', section_name = "baidu"):
         config = ConfigParser()
