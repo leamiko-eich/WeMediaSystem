@@ -72,7 +72,7 @@ if __name__ == "__main__":
     obj_xiaohongshu = XiaohongshuSelenium()
     title = "个人笔记 - 今天怎么样"
     content ="Good Good Study, Day Day Up. 是的"
-    username = '18511400319'
-    # obj_xiaohongshu.login_with_password('18511400319')
+    username = '18710090164'
+    obj_xiaohongshu.login_with_password('18710090164')
     obj_xiaohongshu.login_with_cookie(username, wait_time=5)
     obj_xiaohongshu.publish_article(title, content)
