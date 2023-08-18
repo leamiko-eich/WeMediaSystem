@@ -1,5 +1,8 @@
 #encoding=utf-8
-from BaseSelenium import BaseSelenium
+try:
+    from BaseSelenium import BaseSelenium
+except Exception as e:
+    from .BaseSelenium import BaseSelenium
 import time,json
 from selenium import webdriver
 from selenium import webdriver

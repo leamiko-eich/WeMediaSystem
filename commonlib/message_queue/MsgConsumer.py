@@ -15,7 +15,8 @@ signal.signal(signal.SIGINT, signal_handler)
 
 class MsgConsumer(object):
     def __init__(self, name_exchange='test_change', name_queue='test_queue', name_route_key='test_route_key', key_ex_queue_route=""):
-        self.rabbit_url = 'amqp://admin2:ydl1qaw32@23.251.52.227:5672/%2F'
+        #self.rabbit_url = 'amqp://admin2:ydl1qaw32@23.251.52.227:5672/%2F'
+        self.rabbit_url = 'amqp://admin:123456@23.251.55.170:5672/%2F'
 
         self.name_exchange = name_exchange
         self.name_queue = name_queue
