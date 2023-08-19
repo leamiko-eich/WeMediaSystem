@@ -15,7 +15,7 @@ class ScrawlAgent(object):
     def process_msg(self, json_data):
         msg_info  = MsgInfo(json_data)
         print("msg_info:", msg_info.convert_to_json())
-        # self.platform_manage.call_platform(msg_info)
+        self.platform_manage.scrawl_platform(msg_info)
 
     def loop_flow(self):
         pass

@@ -19,6 +19,7 @@ class ProduceAuthorLink(object):
 
         msg_info = MsgInfo()
         msg_info.task_info.task_name = 'ScrwalAuthorLink'
+        msg_info.task_info.platform = 'Zhihu'
 
         msg_info.target_author.author = '黛西呜呜'
         msg_info.target_author.subscribe_link = 'https://www.zhihu.com/people/dxww/posts'

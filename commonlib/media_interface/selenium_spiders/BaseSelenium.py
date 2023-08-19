@@ -182,3 +182,13 @@ class BaseSelenium(object):
             print("往下滑动 %d" % (i))
             driver.execute_script("window.scrollTo(0, {0})".format(i*150))
             time.sleep(1)
+
+            
+    ## 爬虫基类接口
+    def crawl_by_author_link(self, url=None):
+        ## 根据作者订阅链接，获取文章链接
+        pass
+
+    def parse_specific_article(self, url):
+        ## 根据文章链接，获取内容
+        pass
