@@ -3,6 +3,7 @@
 class MsgInfo(object):
     def __init__(self, dic_info={}):
         self.task_info = TaskInfo(dic_info.get("task_info", {}))
+        self.art_requirements = ArtRequirements(dic_info.get("art_requirements", {}))
         self.target_author = TargetAuthor(dic_info.get("target_author", {}))
         self.generate_article = GenerateArticle(dic_info.get("generate_article", {}))
         self.public_article = PublicArticle(dic_info.get("public_article", {}))
@@ -11,6 +12,7 @@ class MsgInfo(object):
         dic_info = {
             "task_info": self.task_info.convert_to_json(),
             "target_author": self.target_author.convert_to_json(),
+            "art_requirements": self.art_requirements.convert_to_json(),
             "generate_article": self.generate_article.convert_to_json(),
             "public_article": self.public_article.convert_to_json()
         }
@@ -41,6 +43,16 @@ class TargetAuthor(object):
         }
         return dic_info
 
+
+class ArtRequirements(object):
+    def __init__(self, dic_info={}):
+        self.question = dic_info.get("question", "")
+
+    def convert_to_json(self):
+        dic_info = {
+            "question": self.question
+        }
+        return dic_info
 
 
 class TaskInfo(object):
