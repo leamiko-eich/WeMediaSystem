@@ -11,6 +11,8 @@ from selenium.webdriver.firefox.firefox_profile import FirefoxProfile
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.keys import Keys
+import requests
+from bs4 import BeautifulSoup
 
 class ZhihuSelenium(BaseSelenium):
     name_platform = 'Zhihu'
@@ -167,6 +169,65 @@ class ZhihuSelenium(BaseSelenium):
         # Click the "发布" button
         publish_button = self.driver.find_element_by_xpath("//button[@class='Button PublishPanel-submitButton Button--primary Button--blue']")
         publish_button.click( )
+
+    def crawl_by_author_link(self, url=None):
+        assert(url is not None)
+        # 发送GET请求
+        response = requests.get(url)
+        # print("response:", response)
+
+        # 使用BeautifulSoup解析HTML内容
+        soup = BeautifulSoup(response.text, "html.parser")
+
+        # 查找所有文章链接
+        articles = soup.find_all("h2", class_="ContentItem-title")
+
+        list_url_info = []
+
+        for article in articles:
+
+            title = article.get_text()
+            raw_url = article.span.a['href']
+            url = "http:%s"%(raw_url)
+
+            dic_ret = {
+                "title"  : title,   
+                "original_link": url ,
+                "post_date": ""
+            }
+            list_url_info.append(dic_ret)
+
+        return list_url_info
+
+        
+
+
+    def parse_specific_article(self, url):
+        dic_ret = {}
+        response = requests.get(url)
+        soup = BeautifulSoup(response.text, "html.parser")
+
+        self.save_soup_html(soup, 'soup.html')
+
+        
+        ele_content =  soup.select_one("div.RichText.ztext.Post-RichText.css-1g0fqss")
+        self.save_soup_html(ele_content, 'content.html')
+
+        txt_content = self.get_texts_from_bs4(ele_content)
+        txt_content = "\n".join(txt_content)
+
+        div_time = soup.find_all("div", class_="ContentItem-time")
+        post_date=None
+        for div in div_time:
+            text_time = div.get_text()
+            text_time = text_time.split(" ")[1]
+            post_date = text_time
+
+        dic_ret ={
+            "post_date" : post_date,
+            "content": txt_content
+        }
+        return dic_ret
         
         
 if __name__ == "__main__":
@@ -174,6 +235,18 @@ if __name__ == "__main__":
     title = "个人笔记 - 今天怎么样"
     content ="Good Good Study, Day Day Up. 是的"
     username = '251132021@qq.com'
-    obj_zhihu_selenium.login_with_password(username)
-    obj_zhihu_selenium.login_with_cookie(username)
-    obj_zhihu_selenium.publish_article(title, content)
+    # obj_zhihu_selenium.login_with_password(username)
+    # obj_zhihu_selenium.login_with_cookie(username)
+    # obj_zhihu_selenium.publish_article(title, content)
+
+    url = "https://www.zhihu.com/people/jiafeimao/posts"
+    link_art_url = obj_zhihu_selenium.crawl_by_author_link(url)
+
+    # art_url  ="http://zhuanlan.zhihu.com/p/574523304"
+    #dic_ret = obj_zhihu_selenium.parse_specific_article(art_url)
+    #print(dic_ret)
+
+    for dic_url  in link_art_url:
+        original_link = dic_url['original_link']
+        dic_ret = obj_zhihu_selenium.parse_specific_article(original_link)
+        print(dic_ret)

@@ -6,6 +6,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 import time
 import os, json
 from configparser import ConfigParser
+from bs4 import NavigableString
 
 class BaseSelenium(object):
     name_platform = 'base'
@@ -57,12 +58,25 @@ class BaseSelenium(object):
         with open(file_name, "w", encoding="utf-8") as f:
             f.write(element.get_attribute("outerHTML"))
 
+    def save_soup_html(self, soup, file_name='1.html'):
+        with open('data/%s'%(file_name), 'w', encoding='utf-8') as f:
+            f.write(soup.prettify())
+
     def set_driver(self, driver):
         self.driver = driver
 
     def get_driver(self):
         assert(self.driver is not None)
         return self.driver
+
+    def get_texts_from_bs4(self, element):
+        texts = []
+        for child in element.children:
+            if isinstance(child, NavigableString):
+                texts.append(child.string)
+            else:
+                texts.extend(self.get_texts_from_bs4(child))
+        return texts
 
 
     def login_with_cookie(self, username = '', wait_time=0):
