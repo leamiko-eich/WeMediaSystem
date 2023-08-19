@@ -6,6 +6,7 @@ sys.path.append(ROOTDIR_WeMediaSystem)
 
 from .BaseSelenium import BaseSelenium 
 from .ZhihuSelenium import ZhihuSelenium
+from .DoubanSelenium import DoubanSelenium
 from .WechatPublicSelenium import WechatPublicSelenium
 from .XiaohongshuSelenium import XiaohongshuSelenium
 
@@ -22,6 +23,7 @@ class SeleniumManager(object):
 
     def init_platforms(self):
         self.register_platform_agent(ZhihuSelenium)
+        self.register_platform_agent(DoubanSelenium)
 
 
     def call_platform(self,  msg_info: MsgInfo):
