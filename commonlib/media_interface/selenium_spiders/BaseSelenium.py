@@ -94,6 +94,10 @@ class BaseSelenium(object):
         chrome_options.add_argument('--disable-infobars')
         if self.name_platform == 'Xiaohongshu':
             chrome_options.add_argument("--disable-blink-features=AutomationControlled")
+        elif self.name_platform == 'Qiehao':
+            ## 暂时关掉SSL报错，需要处理
+            print("关闭SLS报错")
+            chrome_options.add_argument("--supress-connection-errors")
 
         driver = webdriver.Chrome(options=chrome_options)
    
@@ -112,31 +116,78 @@ class BaseSelenium(object):
         f1 = open('data/%s.json' % (filename))
         cookie = f1.read()
         cookie = json.loads(cookie)
+
+        ## 使用字典记录 key= domain + name
+        dic_cookie = {}
+        for c in cookie: 
+            key = "%s_%s" % (c['domain'], c['name'])
+            dic_cookie[key] = c
+
+
+        ## 首次记载cookie
         for c in cookie:
-            # print("add :", c)
+            print("add :", c)
             driver.add_cookie(c)
         # # 刷新页面
         time.sleep(2)
-        driver.refresh()
+        driver.get(logurl)
+        time.sleep(5)
+        # driver.refresh()          ## 直接使用refresh，会丢失参数
         print("cookie-加载完毕")
+
+        
+        ## 多次检验cookie, 增加缺失字段
+        # for cnt in range(1,5):
+            # print("\n ============> 第%d次 检查cookie" % (cnt))
+            # new_cookie = self.persist_cookie_info(driver, '第%d次cookie'%(cnt), cnt)
+            # new_dict_cookie = {}
+            # for new_c in new_cookie:
+                # key = "%s_%s" % (new_c['domain'], new_c['name'])
+                # if key in new_dict_cookie:
+                    # print("\t Duplicate key:%s" % (key))
+                # new_dict_cookie[key] = new_c
+            # for key in dic_cookie:
+                # value = dic_cookie[key]
+                # if key not in new_dict_cookie:
+                    # print("\t Missing key:%s" % (key), "add ",  value)
+                    # list_str = []
+                    # for t_k, t_v in value.items():
+                        # list_str.append("%s=%s" % (t_k, t_v))
+                    # print("\t \t add %s" %  ("; ".join(list_str)) )
+                    # ret = driver.add_cookie(dic_cookie[key])
+                    # print("\t \t add ret:", ret)
+                # else:
+                    # if new_dict_cookie[key]['value'] != dic_cookie[key]['value']:
+                        # print("\t NotEqual key:%s" % (key) )
+                # print("\t 【修改完等地10")
+                # time.sleep(10)
+# 
+            # print("\t 刷新cookie, 等待7S")
+            # time.sleep(2)
+            # driver.get(logurl)
+            # time.sleep(120)
 
         self.set_driver(driver)
 
-        time.sleep(wait_time)
+        for i in range(wait_time):
+            print("\t 等待%d S, 当前 %d s" % (wait_time, i))
+            time.sleep(1)
         return driver
 
 
     def login_with_password(self, username=''):
         pass
 
-    def persist_cookie_info(self, driver, filename):
+    def persist_cookie_info(self, driver, filename, cnt=0):
         ### 获取cookie
-        print("获取->保存cookie")
+        print("\t[第%d次] 获取->保存cookie" % (cnt))
+
         cookie = driver.get_cookies()
         jsonCookies = json.dumps(cookie)
         with open('data/%s.json' % (filename), 'w') as f:
             f.write(jsonCookies)
-        print("cookie-保存完毕")
+        print("\t[第%d次] cookie-保存完毕" % (cnt))
+        return cookie
 
     def load_user_pass(self, path_config = 'config/user_pass.ini', section_name = "baidu"):
         config = ConfigParser()

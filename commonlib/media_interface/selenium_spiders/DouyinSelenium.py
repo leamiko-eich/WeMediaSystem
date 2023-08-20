@@ -79,29 +79,43 @@ class DouyinSelenium(BaseSelenium):
 
 
     def publish_video(self):
+        ## 输入参数
         path_video = 'H:/6-2.MP4'
+        title_video  ='今天说点什么'
+
         chrome_options = self.get_chrome_options()
 
         driver = self.driver
         print("type driver:", type(driver))
         driver : webdriver.Chrome = driver
 
-        ## 打开图文发布界面
+        ## 打开视频发布界面
         url = 'https://creator.douyin.com/creator-micro/content/upload'
-
         driver.get(url)
         time.sleep(15)
 
+        ## 寻找视频输入窗口
         ele_box = driver.find_element(By.CLASS_NAME, 'container--1GAZf')
         self.save_element_html(ele_box)
-
         input_element = driver.find_element(By.CSS_SELECTOR, 'input[type="file"]')
         # 输入文件路径到<input>元素
         file_path = path_video
         input_element.send_keys(file_path)
+        print("\t 等待视频加载完毕， 20 S")
+        time.sleep(20)
+
+        ## 视频标题
+        ele_title = driver.find_element(By.CSS_SELECTOR, '.zone-container.editor-kit-container.editor.editor-comp-publish.notranslate.chrome')
+        self.save_element_html(ele_title, 'ele_tilte.html')
+        ele_title.send_keys(title_video)
         time.sleep(2)
 
+        self.scroll_to_bottom()
+
         
+        ## 发布按钮 
+        publish_btn = driver.find_element(By.XPATH, '//button[text()="发布"]')
+        publish_btn.click()
         
         time.sleep(50)
         return
@@ -156,6 +170,8 @@ if __name__ == "__main__":
     title = "个人笔记 - 今天怎么样"
     content ="Good Good Study, Day Day Up. 是的"
     username = '18511400319'
-    # douyin_selenium.login_with_password(username)
-    driver = douyin_selenium.login_with_cookie(username, wait_time=10)
-    douyin_selenium.publish_article(title, content)
+    douyin_selenium.login_with_password(username)
+    # driver = douyin_selenium.login_with_cookie(username, wait_time=10)
+    # douyin_selenium.publish_article(title, content)
+    # douyin_selenium.publish_video()
+    douyin_selenium.quit_driver()
