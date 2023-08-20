@@ -9,13 +9,13 @@ from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
 import time, json
 
-class XiaohongshuSelenium(BaseSelenium):
-    name_platform = 'Xiaohongshu'
+class PinterestSelenium(BaseSelenium):
+    name_platform = 'Pinterest'
     def __init__(self):
         super().__init__()
-        self.name_selenium = 'Xiaohongshu'
-        # self.login_url = 'https://www.xiaohongshu.com'
-        self.login_url = 'https://creator.xiaohongshu.com'
+        self.name_selenium = 'Pinterest'
+        # self.login_url = 'https://www.Pinterest.com'
+        self.login_url = 'https://www.pinterest.com/'
 
     def login_with_password(self, username=''):
         print("username: %s" % (username))
@@ -69,10 +69,10 @@ class XiaohongshuSelenium(BaseSelenium):
     
 
 if __name__ == "__main__":
-    obj_xiaohongshu = XiaohongshuSelenium()
+    obj_Pinterest = PinterestSelenium()
     title = "个人笔记 - 今天怎么样"
     content ="Good Good Study, Day Day Up. 是的"
-    username = '18710090164'
-    obj_xiaohongshu.login_with_password('18710090164')
-    obj_xiaohongshu.login_with_cookie(username, wait_time=5)
-    obj_xiaohongshu.publish_article(title, content)
+    username = 'chongqingwei1@gmail.com'
+    obj_Pinterest.login_with_password(username)
+    obj_Pinterest.login_with_cookie(username, wait_time=5)
+    obj_Pinterest.publish_article(title, content)
