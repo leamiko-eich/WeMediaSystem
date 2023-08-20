@@ -110,11 +110,20 @@ class DouyinSelenium(BaseSelenium):
         ele_title.send_keys(title_video)
         time.sleep(2)
 
-        self.scroll_to_bottom()
+        self.scroll_to_bottom(driver)
+
+        
+        ## 选择定时发布
+        ele_dingshi_div = driver.find_element(By.CLASS_NAME, "container--2urnP")
+        check_dingshi =  ele_dingshi_div.find_element(By.CSS_SELECTOR, ".radio--4Gpx6.one-line--2rHu9")
+        check_dingshi.click()
+        time.sleep(2)
+
 
         
         ## 发布按钮 
         publish_btn = driver.find_element(By.XPATH, '//button[text()="发布"]')
+        self.save_element_html(publish_btn, 'publish_bnt.html')
         publish_btn.click()
         
         time.sleep(50)
@@ -170,8 +179,8 @@ if __name__ == "__main__":
     title = "个人笔记 - 今天怎么样"
     content ="Good Good Study, Day Day Up. 是的"
     username = '18511400319'
-    douyin_selenium.login_with_password(username)
-    # driver = douyin_selenium.login_with_cookie(username, wait_time=10)
+    # douyin_selenium.login_with_password(username)
+    driver = douyin_selenium.login_with_cookie(username, wait_time=10)
     # douyin_selenium.publish_article(title, content)
-    # douyin_selenium.publish_video()
+    douyin_selenium.publish_video()
     douyin_selenium.quit_driver()
