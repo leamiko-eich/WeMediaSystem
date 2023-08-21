@@ -52,11 +52,11 @@ class QiehaoSelenium(BaseSelenium):
 
         # driver.delete_all_cookies()
 
-        time.sleep(30)
+        time.sleep(60)
         filename = "%s_%s" % (self.name_selenium, username)
         self.persist_cookie_info(driver, filename)
 
-        time.sleep(60)
+        time.sleep(30)
         driver.quit()
 
     def get_chrome_options(self):
@@ -74,70 +74,58 @@ class QiehaoSelenium(BaseSelenium):
         chrome_options.add_argument('--disable-infobars')
         return chrome_options
 
+    def public_article(self, title, content):
+        driver: webdriver.Chrome = self.get_driver()
+        self.login_url = 'https://om.qq.com/main/creation/article'
+        driver.get(self.login_url)
+        time.sleep(3)
 
- 
+        # 这部分等江峰解决，如何虚拟点击发布文章按钮。
 
-
-    def publish_article(self, article_title, article_content):
-        chrome_options = self.get_chrome_options()
-
-        driver = self.driver
-
-
-        button_write_article = driver.find_element(By.CSS_SELECTOR, 'button[title="写文章"]')
-        self.save_element_html(button_write_article, 'button_write_article.html')
-        button_write_article.click()
-
-        self.switch_to_new_windows(driver)
-
-        
-        input_title = driver.find_element(By.CLASS_NAME, 'Input')
-        self.save_element_html(input_title, 'input_title.html')
-        input_title.send_keys(article_title)
+        # 找到输入框元素
+        input_title = driver.find_element(By.CSS_SELECTOR, '.omui-inputautogrowing__inner')
+        input_title.send_keys(title)
         time.sleep(2)
 
-        # input_content = driver.find_element(By.CLASS_NAME, 'public-DraftStyleDefault-block public-DraftStyleDefault-ltr')
-        input_content = driver.find_element(By.CSS_SELECTOR, '.public-DraftStyleDefault-block.public-DraftStyleDefault-ltr')
-        self.save_element_html(input_content, 'input_content.html')
-        input_content.send_keys(article_content)
+        # 输入正文内容
+        # 使用 driver.find_element 查找文章正文内容的可编辑元素
+        content_element = driver.find_element(By.CSS_SELECTOR, '.ProseMirror.ExEditor-basic')
+
+        # 输入文章正文内容
+        article_content = "这是您的文章正文内容。"
+        content_element.send_keys(content)
+        driver.execute_script("window.scrollBy(0, 500);")  # 500为滚动的像素值
+        # '是否单标题'
+        single_title_input = driver.find_element(By.CSS_SELECTOR, 'div.byte-radio-inner ')
+        single_title_input.click()
+        time.sleep(4)
+
+        # 添加封面图片
+        svg_element = driver.find_element(By.CSS_SELECTOR, 'svg.add-icon.byte-icon.byte-icon-plus')
+        svg_element.click()
+        time.sleep(4)
+
+        input_element = driver.find_element(By.CSS_SELECTOR, 'input[type="file"]')
+        # 输入文件路径到<input>元素
+        file_path = "C:/Users/chongqingwei/Desktop/1.jpg"  # 本地文件的路径
+        input_element.send_keys(file_path)
+        time.sleep(2)
+        # 上传完以后点击确定按钮
+        button_element = driver.find_element(By.CSS_SELECTOR, 'button[data-e2e="imageUploadConfirm-btn"]')
+        button_element.click()
         time.sleep(2)
 
-        self.scroll_to_bottom(driver)
+        # 定位到预览并发布按钮的元素
+        preview_publish_button = driver.find_element(By.XPATH, '//button[contains(span, "预览并发布")]')
 
-        # btn_add_topic = driver.find_element(By.CLASS_NAME, '.css-f7rzgf')
-        # self.save_element_html(btn_add_topic, 'btn_add_topic.html')
-        # btn_add_topic.click()
-        # time.sleep(2)
-# 
-        # input_topic = driver.find_element(By.CSS_SELECTOR, '.css-nvm401.Input-wrapper.QZcfWkCJoarhIYxlM_sG')
-        # self.save_element_html(input_topic, 'input_topic.html')
-        # input_topic.send_keys('日记')
-        # time.sleep(2)
-
-        btn_publish = driver.find_element(By.CSS_SELECTOR, '.Button.css-d0uhtl.Button--primary.Button--blue')
-        btn_publish.click()
-
-
-
-        
-
-        time.sleep(30)
-        return
-        # Click the "写文章" button
-        write_article_button = self.driver.find_element_by_xpath("//button[@class='Button WriteIndex-articleButton Button--primary Button--blue']")
-        write_article_button.click()
-        
-        # Input the article title
-        title_input = self.driver.find_element_by_xpath("//input[@class='Input WriteIndex-titleInput']")
-        title_input.send_keys(article_title)
-        
-        # Input the article content
-        content_input = self.driver.find_element_by_xpath("//div[@class='public-DraftEditor-content']")
-        content_input.send_keys(article_content)
-        
-        # Click the "发布" button
-        publish_button = self.driver.find_element_by_xpath("//button[@class='Button PublishPanel-submitButton Button--primary Button--blue']")
-        publish_button.click( )
+        preview_publish_button.click()
+        time.sleep(2)
+        # 定位到确认发布按钮的元素
+        confirm_publish_button = driver.find_element(By.XPATH, '//button[contains(span, "确认发布")]')
+        # 点击确认发布按钮
+        confirm_publish_button.click()
+        time.sleep(2)
+        driver.quit()
         
         
 if __name__ == "__main__":
@@ -145,9 +133,9 @@ if __name__ == "__main__":
     title = "个人笔记 - 今天怎么样"
     content ="Good Good Study, Day Day Up. 是的"
     username = '251132021'
-    # obj_qiehao_selenium.login_with_password(username)
-    obj_qiehao_selenium.login_with_cookie(username, wait_time=360)
-    # obj_qiehao_selenium.publish_article(title, content)
+    obj_qiehao_selenium.login_with_password(username)
+    obj_qiehao_selenium.login_with_cookie(username, wait_time=5)
+    obj_qiehao_selenium.publish_article(title, content)
 
     
     obj_qiehao_selenium.quit_driver()
