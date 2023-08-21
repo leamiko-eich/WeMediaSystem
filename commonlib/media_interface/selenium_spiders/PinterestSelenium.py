@@ -72,7 +72,7 @@ if __name__ == "__main__":
     obj_Pinterest = PinterestSelenium()
     title = "个人笔记 - 今天怎么样"
     content ="Good Good Study, Day Day Up. 是的"
-    username = 'chongqingwei1@gmail.com'
+    username = 'chongqingwei1@outlook.com'
     obj_Pinterest.login_with_password(username)
     obj_Pinterest.login_with_cookie(username, wait_time=5)
     obj_Pinterest.publish_article(title, content)
