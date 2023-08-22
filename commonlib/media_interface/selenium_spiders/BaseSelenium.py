@@ -131,7 +131,7 @@ class BaseSelenium(object):
         # # 刷新页面
         time.sleep(2)
         driver.get(logurl)
-        time.sleep(5)
+        time.sleep(3)
         # driver.refresh()          ## 直接使用refresh，会丢失参数
         print("cookie-加载完毕")
 
