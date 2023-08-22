@@ -74,7 +74,7 @@ class QiehaoSelenium(BaseSelenium):
         chrome_options.add_argument('--disable-infobars')
         return chrome_options
 
-    def public_article(self, title, content):
+    def publish_article(self, title, content):
         driver: webdriver.Chrome = self.get_driver()
         self.login_url = 'https://om.qq.com/main/creation/article'
         driver.get(self.login_url)
@@ -84,32 +84,41 @@ class QiehaoSelenium(BaseSelenium):
 
         # 找到输入框元素
         input_title = driver.find_element(By.CSS_SELECTOR, '.omui-inputautogrowing__inner')
+        input_title.clear()
         input_title.send_keys(title)
         time.sleep(2)
 
         # 输入正文内容
         # 使用 driver.find_element 查找文章正文内容的可编辑元素
         content_element = driver.find_element(By.CSS_SELECTOR, '.ProseMirror.ExEditor-basic')
-
-        # 输入文章正文内容
-        article_content = "这是您的文章正文内容。"
+        # 输入文章正文内容 清除内容
+        content_element.clear()
         content_element.send_keys(content)
+
         driver.execute_script("window.scrollBy(0, 500);")  # 500为滚动的像素值
         # '是否单标题'
-        single_title_input = driver.find_element(By.CSS_SELECTOR, 'div.byte-radio-inner ')
+        single_title_input = driver.find_element(By.CSS_SELECTOR, 'label.omui-radio')
         single_title_input.click()
         time.sleep(4)
 
         # 添加封面图片
-        svg_element = driver.find_element(By.CSS_SELECTOR, 'svg.add-icon.byte-icon.byte-icon-plus')
+        svg_element = driver.find_element(By.CSS_SELECTOR, 'i.omui-icon.omui-icon-plus')
         svg_element.click()
         time.sleep(4)
+        #找到本地上传按钮
+        local_upload_button = driver.find_element(By.XPATH, "//li[@class='omui-tab__label' and text()='本地上传']")
+        local_upload_button.click()
+        time.sleep(4)
+        #点击上传图片的十字按钮
+        input_element = driver.find_element(By.CSS_SELECTOR, 'omui-upload-image-trigger-add-icon')
+        input_element.click()
+        time.sleep(4)
 
-        input_element = driver.find_element(By.CSS_SELECTOR, 'input[type="file"]')
         # 输入文件路径到<input>元素
         file_path = "C:/Users/chongqingwei/Desktop/1.jpg"  # 本地文件的路径
         input_element.send_keys(file_path)
         time.sleep(2)
+
         # 上传完以后点击确定按钮
         button_element = driver.find_element(By.CSS_SELECTOR, 'button[data-e2e="imageUploadConfirm-btn"]')
         button_element.click()
@@ -133,7 +142,7 @@ if __name__ == "__main__":
     title = "个人笔记 - 今天怎么样"
     content ="Good Good Study, Day Day Up. 是的"
     username = '251132021'
-    obj_qiehao_selenium.login_with_password(username)
+    # obj_qiehao_selenium.login_with_password(username)
     obj_qiehao_selenium.login_with_cookie(username, wait_time=5)
     obj_qiehao_selenium.publish_article(title, content)
 
