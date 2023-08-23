@@ -231,7 +231,7 @@ class Crawler(BaseSelenium):
         driver.quit()
         return author_articles
 
-    def public_article(self, title, content, author='Lengxiao'):
+    def publish_article(self, title, content, author='Lengxiao'):
         driver: webdriver.Chrome = self.get_driver()
         self.login_url = 'https://mp.toutiao.com/profile_v4/graphic/publish?from=toutiao_pc'
         driver.get(self.login_url)
@@ -302,4 +302,4 @@ if __name__ == '__main__':
     ob_Crawler.load_user_pass(section_name='toutiao')
     # ob_Crawler.login_with_password(username)
     ob_Crawler.login_with_cookie(username)
-    ob_Crawler.public_article(title=title, content=content, author=author)
+    ob_Crawler.publish_article(title=title, content=content, author=author)

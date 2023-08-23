@@ -54,15 +54,54 @@ class XiaohongshuSelenium(BaseSelenium):
         time.sleep(50)
         driver.quit()
 
+    def publish_article(self, title, content):
+        driver: webdriver.Chrome = self.get_driver()
+        self.login_url = 'https://mp.toutiao.com/profile_v4/graphic/publish?from=toutiao_pc'
+        driver.get(self.login_url)
+        time.sleep(3)
 
-    def publish_article(self, article_title, article_content):
-        driver = self.driver
-        print("type driver:", type(driver))
-        driver : webdriver.Chrome = driver
- 
+        # 这部分等江峰解决，如何虚拟点击发布文章按钮。
 
-        time.sleep(30)
-        return
+        input_title = driver.find_element(By.CSS_SELECTOR, 'div.publish-editor-title-inner textarea')
+        input_title.send_keys(title)
+        time.sleep(2)
+
+        # 输入正文内容
+        div_element = driver.find_element(By.CSS_SELECTOR, 'div.ProseMirror')
+        div_element.send_keys(content)
+        time.sleep(4)
+        driver.execute_script("window.scrollBy(0, 500);")  # 500为滚动的像素值
+        # '是否单标题'
+        single_title_input = driver.find_element(By.CSS_SELECTOR, 'div.byte-radio-inner ')
+        single_title_input.click()
+        time.sleep(4)
+
+        # 添加封面图片
+        svg_element = driver.find_element(By.CSS_SELECTOR, 'svg.add-icon.byte-icon.byte-icon-plus')
+        svg_element.click()
+        time.sleep(4)
+
+        input_element = driver.find_element(By.CSS_SELECTOR, 'input[type="file"]')
+        # 输入文件路径到<input>元素
+        file_path = "C:/Users/chongqingwei/Desktop/1.jpg"  # 本地文件的路径
+        input_element.send_keys(file_path)
+        time.sleep(2)
+        # 上传完以后点击确定按钮
+        button_element = driver.find_element(By.CSS_SELECTOR, 'button[data-e2e="imageUploadConfirm-btn"]')
+        button_element.click()
+        time.sleep(2)
+
+        # 定位到预览并发布按钮的元素
+        preview_publish_button = driver.find_element(By.XPATH, '//button[contains(span, "预览并发布")]')
+
+        preview_publish_button.click()
+        time.sleep(2)
+        # 定位到确认发布按钮的元素
+        confirm_publish_button = driver.find_element(By.XPATH, '//button[contains(span, "确认发布")]')
+        # 点击确认发布按钮
+        confirm_publish_button.click()
+        time.sleep(2)
+        driver.quit()
 
 
 
@@ -73,6 +112,6 @@ if __name__ == "__main__":
     title = "个人笔记 - 今天怎么样"
     content ="Good Good Study, Day Day Up. 是的"
     username = '18710090164'
-    obj_xiaohongshu.login_with_password('18710090164')
-    obj_xiaohongshu.login_with_cookie(username, wait_time=5)
+    # obj_xiaohongshu.login_with_password('18710090164')
+    obj_xiaohongshu.login_with_cookie(username, wait_time=3)
     obj_xiaohongshu.publish_article(title, content)
