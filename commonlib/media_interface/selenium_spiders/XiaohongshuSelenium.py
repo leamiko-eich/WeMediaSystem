@@ -56,50 +56,36 @@ class XiaohongshuSelenium(BaseSelenium):
 
     def publish_article(self, title, content):
         driver: webdriver.Chrome = self.get_driver()
-        self.login_url = 'https://mp.toutiao.com/profile_v4/graphic/publish?from=toutiao_pc'
+        self.login_url = 'https://creator.xiaohongshu.com/publish/publish'
         driver.get(self.login_url)
         time.sleep(3)
 
-        # 这部分等江峰解决，如何虚拟点击发布文章按钮。
+        # 点击图文上传。
+        upload_button = driver.find_element(By.XPATH,'//span[text()="上传图文"]')
+        upload_button.click()
 
-        input_title = driver.find_element(By.CSS_SELECTOR, 'div.publish-editor-title-inner textarea')
-        input_title.send_keys(title)
-        time.sleep(2)
+        file_path = "C:/Users/chongqingwei/Desktop/1.jpg"  # 本地文件的路径
+        upload_input = driver.find_element(By.CLASS_NAME,"upload-input")
+        upload_input.send_keys(file_path)
+        time.sleep(4)
+        #输入标题
+        input_field = driver.find_element(By.CSS_SELECTOR ,'input.c-input_inner')
+        # Clear the existing content in the input field
+        input_field.clear()
+        # Enter your own title
+        input_field.send_keys(title)
 
         # 输入正文内容
-        div_element = driver.find_element(By.CSS_SELECTOR, 'div.ProseMirror')
-        div_element.send_keys(content)
-        time.sleep(4)
-        driver.execute_script("window.scrollBy(0, 500);")  # 500为滚动的像素值
-        # '是否单标题'
-        single_title_input = driver.find_element(By.CSS_SELECTOR, 'div.byte-radio-inner ')
-        single_title_input.click()
-        time.sleep(4)
-
-        # 添加封面图片
-        svg_element = driver.find_element(By.CSS_SELECTOR, 'svg.add-icon.byte-icon.byte-icon-plus')
-        svg_element.click()
-        time.sleep(4)
-
-        input_element = driver.find_element(By.CSS_SELECTOR, 'input[type="file"]')
-        # 输入文件路径到<input>元素
-        file_path = "C:/Users/chongqingwei/Desktop/1.jpg"  # 本地文件的路径
-        input_element.send_keys(file_path)
-        time.sleep(2)
-        # 上传完以后点击确定按钮
-        button_element = driver.find_element(By.CSS_SELECTOR, 'button[data-e2e="imageUploadConfirm-btn"]')
-        button_element.click()
-        time.sleep(2)
-
-        # 定位到预览并发布按钮的元素
-        preview_publish_button = driver.find_element(By.XPATH, '//button[contains(span, "预览并发布")]')
-
-        preview_publish_button.click()
-        time.sleep(2)
-        # 定位到确认发布按钮的元素
-        confirm_publish_button = driver.find_element(By.XPATH, '//button[contains(span, "确认发布")]')
-        # 点击确认发布按钮
-        confirm_publish_button.click()
+        editable_element = driver.find_element(By.ID,"post-textarea")
+        # Clear any existing content (optional)
+        editable_element.clear()
+        # Enter your own content
+        editable_element.send_keys(content)
+        driver.execute_script("window.scrollBy(0, 30);")  # 500为滚动的像素值
+        # 定位到发布按钮
+        publish_button = driver.find_element(By.CLASS_NAME, 'css-k3hpu2')
+        # Click the "发布" button
+        publish_button.click()
         time.sleep(2)
         driver.quit()
 
