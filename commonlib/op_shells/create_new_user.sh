@@ -1,5 +1,9 @@
 #!/bin/bash
+
 username="jeff"
+username="lengxiao"
+username="jiangbo"
+userdel -r ${username}
 echo -e "创建-指定主目录"
 useradd -m -d /home/${username} ${username}
 echo -e "设定密码"
