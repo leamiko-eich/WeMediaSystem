@@ -21,23 +21,33 @@ class BaseSelenium(object):
         self.login_url = ''
         self.is_linux = self.get_is_linux()
 
-        chrome_options = webdriver.ChromeOptions()
-        if mode=="online":
-            chrome_options.add_argument('--headless')  
-            chrome_options.add_argument('--log-level=3')
-            chrome_options.add_argument('user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.107 Safari/537.36')
 
-        # if is_linux:
-            # chrome_options.add_argument('--no-sandbox')
-            # chrome_options.add_argument('--disable-dev-shm-usage')
-            # chrome_options.add_argument('start-maximized')
-            # chrome_options.add_argument("--disable-extensions")
-            # chrome_options.add_argument('--disable-browser-side-navigation')
-            # chrome_options.add_argument('enable-automation')
-            # chrome_options.add_argument('--disable-infobars')
-            # chrome_options.add_argument('enable-features=NetworkServiceInProcess')
-            # WEB_DRIVER_PATH = '/usr/bin/chromedriver'
-            # driver = webdriver.Chrome(options=chrome_options, executable_path=WEB_DRIVER_PATH)
+        ##  內容canshu
+        self.g_title = 'every day is a good day'
+        self.g_content = 'record things list'
+        self.g_gen_date_hour = ''
+        self.g_format_content = ''
+        self.g_is_publish_success = ''
+        self.path_video = ""
+        self.path_image = ""
+
+    def get_content_fron_dict(self, dic_info={}):
+        self.g_title = dic_info.get("g_title", "")
+        self.g_content = dic_info.get("g_content", "")
+        self.g_gen_date_hour = dic_info.get("g_gen_date_hour", "")
+        self.g_format_content = dic_info.get("g_format_content", "")
+        self.g_is_publish_success = dic_info.get("g_is_publish_success", False)
+
+        self.path_win_video = dic_info.get("path_win_video", "")
+        self.path_linux_video = dic_info.get("path_linux_video", "")
+        self.path_win_image = dic_info.get("path_win_image", "")
+        self.path_linux_image = dic_info.get("path_linux_image", "")
+        if self.is_linux:
+            self.path_video = self.path_linux_video
+            self.path_image = self.path_linux_image
+        else:
+            self.path_video = self.path_win_video
+            self.path_image = self.path_win_image
 
 
     def get_is_linux(self):
