@@ -82,7 +82,7 @@ class BaseSelenium(object):
     def login_with_cookie(self, username = '', wait_time=0):
         chrome_options = webdriver.ChromeOptions()
     
-        chrome_options.add_argument("window-size=1024,768")
+        chrome_options.add_argument("window-size=1024,1168")
         chrome_options.add_argument('user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.107 Safari/537.36')
    
         chrome_options.add_argument('--no-sandbox')

@@ -27,7 +27,7 @@ class InstgramSelenium(BaseSelenium):
 
     def login_with_password(self, username=''):
         chrome_options = webdriver.ChromeOptions()
-        chrome_options.add_argument("window-size=1024,768")
+        chrome_options.add_argument("window-size=1024,1124")
         chrome_options.add_argument('user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.107 Safari/537.36')
    
         chrome_options.add_argument('--no-sandbox')
@@ -85,118 +85,94 @@ class InstgramSelenium(BaseSelenium):
         print("type driver:", type(driver))
         driver : webdriver.Chrome = driver
 
-
-        ## 点击投稿按钮
-        button_write_article = driver.find_element(By.CLASS_NAME, 'header-upload-entry__text')
-        self.save_element_html(button_write_article, 'button_write_article.html')
-        button_write_article.click()
-
-        
-        ## 切换到新窗口
-        print("prev url:",  driver.current_url)
-        self.switch_to_new_windows(driver)
-        print("after url:",  driver.current_url)
-        self.save_driver_html(driver, 'driver.html')
-
-
-        nav_bar = driver.find_element(By.CLASS_NAME, "upload-nav")  
-
-        # 根据链接文本内容定位到"专栏投稿"链接
-        column_link = nav_bar.find_element(By.LINK_TEXT, "专栏投稿")
-        column_link.click()
-        time.sleep(2)
-
-        self.save_driver_html(driver, 'driver.html')
-
-        
-        ## 寻找输入的iframe
-        iframe_box = driver.find_element(By.ID, 'edit-article-box')
-        self.save_element_html(iframe_box, 'iframe_box.html')
-        time.sleep(2)
-
-        ## 先获取iframe元素
-        iframe = iframe_box.find_element(By.CSS_SELECTOR, "iframe")
-        self.save_element_html(iframe, 'iframe_before.html')
-
-        # 切换到iframe 内部 
-        print("切换到内部")
-        driver.switch_to.frame(iframe)
-
-        # 等待iframe加载完成
-        time.sleep(5) 
-        self.save_driver_html(driver, 'iframe_innder.html')
-
-        ## 输入标题
-        input_title = driver.find_element(By.CSS_SELECTOR, '.ui-input-textarea.article-title')
-        self.save_element_html(input_title, 'input_title.html')
-        textarea = input_title.find_element(By.CSS_SELECTOR, 'textarea')
-        textarea.send_keys(article_title)
-        time.sleep(2)
-
-        ## 输入内容- 获取iframe
-        # iframe_content = driver.find_element(By.CSS_SELECTOR, '.notranslate.public-DraftEditor-content')
-        iframe_content = driver.find_element(By.ID, 'ueditor_0')
-        self.save_element_html(iframe_content, 'iframe_content_outer.html')
-        # iframe_content.send_keys(content)
-        # driver.execute_script("arguments[0].value = '%s'" % (article_content), iframe_content)
-
-        print("切换到内部 -content")
-        driver.switch_to.frame(iframe_content)
+        url_publish = 'https://www.instagram.com/?hl=zh-cn'
+        driver.get(url_publish)
         time.sleep(5)
-        self.save_driver_html(driver, 'iframe_content_inner.html')
 
+        self.save_driver_html(driver, 'instgram_login.html')
 
-        ## 寻找插入框
-        body_content = driver.find_element(By.CSS_SELECTOR, "body")
-        self.save_element_html(body_content, 'body_content.html')
+        ## 点击-以后再说
+        print("跳过-以后再说")
+        button_next = driver.find_element(By.XPATH, "//button[text()='以后再说']")
+        button_next.click()
+        time.sleep(5)
+        self.save_driver_html(driver, 'instgram_create_1.html')
 
-        # body_content.clear()
-        body_content.send_keys(article_content)
-        time.sleep(3)
+        ## 点击创建
+        print("点击创建")
+        # div_new_post = driver.find_element(By.XPATH, "//div[svg[@aria-label='新帖子']]")
+        # div_new_post = driver.find_element(By.XPATH, "//svg[@aria-label='新帖子']")
+        div_new_post = driver.find_element(By.CSS_SELECTOR, "svg[aria-label='新帖子']")
+        self.save_element_html(div_new_post, 'div_new_post.html')
+        div_new_post.click()
+        time.sleep(5)
+        self.save_driver_html(driver, 'instgram_create_2.html')
 
+        ## 点击上传
+        div_container = driver.find_element(By.CSS_SELECTOR, '.x7r02ix.xf1ldfh.x131esax.xdajt7p.xxfnqb6.xb88tzc.xw2csxc.x1odjw0f.x5fp0pe')
+        self.save_element_html(div_container, 'instgram_div_container.html')
 
-        ## 切回到ifram1
-        driver.switch_to.parent_frame()  
-        self.save_driver_html(driver, 'main_iframe1.html')
-        time.sleep(2)
+        input_img_video = div_container.find_element(By.CSS_SELECTOR, 'input[class="\_ac69"]')
+        self.save_element_html(input_img_video, 'instgram_input_img_video.html')
+        # path_video = 'H:/6-2.MP4'
+        path_video = 'H:/2.jpeg'
+        input_img_video.send_keys(path_video)
+        print("\t 等待视频加载完毕， 10 S")
+        time.sleep(10)
+        self.save_driver_html(driver, 'instgram_create_3.html')
 
-        ## 最后提交按钮
-        bnt_final_submit = driver.find_element(By.CSS_SELECTOR, '.ui-btn.blue-radius')
-        self.save_element_html(bnt_final_submit, 'bnt_final_submit.html')
-        bnt_final_submit.click()
-        time.sleep(2)
+        ## 点击继续
+        print("点击-继续")
+        div_dialog = driver.find_element(By.CSS_SELECTOR, '.x1ja2u2z.x1afcbsf.x1a2a7pz.x6ikm8r.x10wlt62.x71s49j.x6s0dn4.x78zum5.xdt5ytf.xl56j7k.x1n2onr6')
+        self.save_element_html(div_dialog, 'instgram_div_dialog.html')
 
-        ## 切回到主页面
-        driver.switch_to.default_content()
-        self.save_driver_html(driver, 'main_default.html')
+        div_continue = div_dialog.find_element(By.CSS_SELECTOR, '._ac7b._ac7d')
+        self.save_element_html(div_continue, 'instgram_div_continue.html')
+
+        div_continue_button = div_continue.find_element(By.XPATH, "//div[text()='继续']")
+        self.save_element_html(div_continue_button, 'instgram_div_continue_button.html')
+        div_continue_button.click()
+        time.sleep(10)
+
+        ## 编辑-继续
+        print("点击-编辑-继续")
+        self.save_driver_html(driver, 'instgram_create_4.html')
+        div_editor = driver.find_element(By.CSS_SELECTOR, ".x1cy8zhl.x9f619.x78zum5.xl56j7k.x2lwn1j.xeuugli.x47corl")
+        self.save_element_html(div_editor, 'instgram_div_editor.html')
+
+        div_continue_button = div_editor.find_element(By.XPATH, "//div[text()='继续']")
+        self.save_element_html(div_continue_button, 'instgram_div_continue_button.html')
+        div_continue_button.click()
+        time.sleep(10)
+
+        ## 点击分享
+        print("点击-分享")
+        self.save_driver_html(driver, 'instgram_create_5.html')
+        div_share = driver.find_element(By.CSS_SELECTOR, ".x7r02ix.xf1ldfh.x131esax.xdajt7p.xxfnqb6.xb88tzc.xw2csxc.x1odjw0f.x5fp0pe")
+        self.save_element_html(div_share, 'instgram_div_share.html')    
+
         
 
-        time.sleep(60)
-        return
+        div_title = driver.find_element(By.CSS_SELECTOR, "div[aria-label='输入说明文字...']")
+        self.save_element_html(div_title, 'instgram_div_title.html')
 
-        time.sleep(15)
-
+        article_title = "test 111"
+        div_title.send_keys(article_title)
         
 
-        # iframe_content = driver.find_element(By.CLASS_NAME, 'public-DraftStyleDefault-block public-DraftStyleDefault-ltr')
+
+        # div_continue_button = div_share.find_element(By.XPATH, "//div[text()='分享']")
+        # self.save_element_html(div_continue_button, 'instgram_div_continue_button.html')
+        # div_continue_button.click()
 
 
-        btn_publish = driver.find_element(By.CLASS_NAME, 'editor-extra-button-submit')
-        btn_publish.click()
-        time.sleep(2)
 
-        box_publish = driver.find_element(By.CLASS_NAME, 'editor-popup-setting-submit')
-        self.save_element_html(box_publish,'box_publish.html')
-
-        final_pub_btn = box_publish.find_element(By.CSS_SELECTOR, 'button[type="submit"]')
-        self.save_element_html(final_pub_btn,'final_pub_bnt.html')
-        final_pub_btn.click()
 
 
 
         
 
-        time.sleep(30)
+        time.sleep(120)
         return
         
         
@@ -206,5 +182,6 @@ if __name__ == "__main__":
     content ="Good Good Study, Day Day Up. 是的"
     username = '18511400319'
     # instgram_selenium.login_with_password(username)
-    driver = instgram_selenium.login_with_cookie(username, wait_time=30)
-    # instgram_selenium.publish_article(title, content)
+    driver = instgram_selenium.login_with_cookie(username, wait_time=1)
+    instgram_selenium.publish_article(title, content)
+    instgram_selenium.quit_driver()
