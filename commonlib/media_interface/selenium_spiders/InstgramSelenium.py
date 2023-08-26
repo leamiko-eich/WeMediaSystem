@@ -159,11 +159,11 @@ if __name__ == "__main__":
         "path_win_video" : 'H:/2.jpeg',
         "path_linux_video" : 'H:/2.jpeg',
         "path_win_image" : 'H:/2.jpeg',
-        "path_linux_image" : 'images/2.jpeg'
+        "path_linux_image" : '/home/jeff/code/WeMediaSystem/commonlib/media_interface/selenium_spiders/images/2.jpeg'
     }
     instgram_selenium.get_content_fron_dict(dic_info)
     username = '18511400319'
     # instgram_selenium.login_with_password(username)
     driver = instgram_selenium.login_with_cookie(username, wait_time=1)
-    instgram_selenium.publish_article(title, content)
+    instgram_selenium.publish_article(title, content, flag_debug=True)
     instgram_selenium.quit_driver()
