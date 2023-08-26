@@ -1,4 +1,5 @@
 use wemedia;
+DROP TABLE if exists table_target_user;
 CREATE TABLE table_target_user (
     platform VARCHAR(100),
     content_category VARCHAR(100),

@@ -15,6 +15,9 @@ class InitDbTable(BaseMysql):
         path_sql = "sql/create_table_target_user.sql"
         with open(path_sql, 'r') as f:
             sql = f.read()
+            sql = sql.replace("\n", "")
+        sql = "use wemedia; CREATE TABLE if not exists table_target_user (platform VARCHAR(100));"
+        sql = "use wemedia; create table user (name varchar(23))"
         self.execute_sql(sql)
         
 
