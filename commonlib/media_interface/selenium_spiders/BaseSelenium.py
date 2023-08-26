@@ -3,14 +3,14 @@ from system_config import *
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service as ChromeService
 from webdriver_manager.chrome import ChromeDriverManager
-import time
+import time,sys
 import os, json
 from configparser import ConfigParser
 from bs4 import NavigableString
 
 class BaseSelenium(object):
     name_platform = 'base'
-    def __init__(self, mode="debug"):
+    def __init__(self, mode="debug", useHead=True):
         if not os.path.exists("data"):
             os.mkdir("data")
 
@@ -18,34 +18,44 @@ class BaseSelenium(object):
         self.dict_user_pass = {}
         self.driver = None
         self.login_url = ''
+        self.is_linux = self.get_is_linux()
 
         chrome_options = webdriver.ChromeOptions()
-        #path_driver = "H:\driver\chromedriver.exe"
-        #chrome_options.binary_location = path_driver
         if mode=="online":
             chrome_options.add_argument('--headless')  
             chrome_options.add_argument('--log-level=3')
             chrome_options.add_argument('user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.107 Safari/537.36')
 
-        if is_linux:
-            chrome_options.add_argument('--no-sandbox')
-            chrome_options.add_argument('--disable-dev-shm-usage')
-            chrome_options.add_argument('start-maximized')
-            chrome_options.add_argument("--disable-extensions")
-            chrome_options.add_argument('--disable-browser-side-navigation')
-            chrome_options.add_argument('enable-automation')
-            chrome_options.add_argument('--disable-infobars')
-            chrome_options.add_argument('enable-features=NetworkServiceInProcess')
-            WEB_DRIVER_PATH = '/usr/bin/chromedriver'
-            driver = webdriver.Chrome(options=chrome_options, executable_path=WEB_DRIVER_PATH)
+        # if is_linux:
+            # chrome_options.add_argument('--no-sandbox')
+            # chrome_options.add_argument('--disable-dev-shm-usage')
+            # chrome_options.add_argument('start-maximized')
+            # chrome_options.add_argument("--disable-extensions")
+            # chrome_options.add_argument('--disable-browser-side-navigation')
+            # chrome_options.add_argument('enable-automation')
+            # chrome_options.add_argument('--disable-infobars')
+            # chrome_options.add_argument('enable-features=NetworkServiceInProcess')
+            # WEB_DRIVER_PATH = '/usr/bin/chromedriver'
+            # driver = webdriver.Chrome(options=chrome_options, executable_path=WEB_DRIVER_PATH)
+
+
+    def get_is_linux(self):
+        is_linux = False
+        if sys.platform.startswith('win'):
+            # 当前系统是 Windows
+            is_linux = False
+            print("[当前系统] windows")
+        elif sys.platform.startswith('linux'):
+            # 当前系统是 Linux
+            print("[当前系统] linux")
+            is_linux = True
         else:
-            print("使用profile 1")
-            # chrome_options.add_argument("user-data-dir=C:\\Users\\Administrator\\AppData\\Local\\google\\Chrome\\User Data\\Profile 1")
-            # driver = webdriver.Chrome(options=chrome_options)
+            # 其他操作系统
+            print("其他操作系统")
+        return is_linux
 
-        # self.driver = driver
 
-    def publish_article(self, article_title='', article_content=''):
+    def publish_article(self, article_title='', article_content='', flag_debug=True):
         pass
         
     def save_driver_html(self, driver: webdriver, file_name="1.html"):
@@ -98,6 +108,10 @@ class BaseSelenium(object):
             ## 暂时关掉SSL报错，需要处理
             print("关闭SLS报错")
             chrome_options.add_argument("--supress-connection-errors")
+        if not self.useHead:
+            print("使用headless 模式")
+            chrome_options.add_argument('--headless')  
+            chrome_options.add_argument('--log-level=3')
 
         driver = webdriver.Chrome(options=chrome_options)
    
@@ -126,7 +140,7 @@ class BaseSelenium(object):
 
         ## 首次记载cookie
         for c in cookie:
-            print("add :", c)
+            # print("add :", c)
             driver.add_cookie(c)
         # # 刷新页面
         time.sleep(2)
@@ -169,10 +183,14 @@ class BaseSelenium(object):
 
         self.set_driver(driver)
 
-        for i in range(wait_time):
-            print("\t 等待%d S, 当前 %d s" % (wait_time, i))
-            time.sleep(1)
+        self.time_wait(wait_time, 5)
         return driver
+
+    def time_wait(self, wait_time=0, interval = 3):
+        count = int(wait_time/interval)
+        for i in range(1,count+1):
+            print("\t 等待%d S, 当前 %d s" % (wait_time, i*interval))
+            time.sleep(interval)
 
 
     def login_with_password(self, username=''):
@@ -205,9 +223,14 @@ class BaseSelenium(object):
 
     def get_chrome_options(self):
         chrome_options = webdriver.ChromeOptions()
+
+        if not self.useHead:
+            print("使用headless 模式")
+            chrome_options.add_argument('--headless')  
+            chrome_options.add_argument('--log-level=3')
         # chrome_options.add_argument("window-size=1024,768")
+
         chrome_options.add_argument('user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.107 Safari/537.36')
-   
         chrome_options.add_argument('--no-sandbox')
         chrome_options.add_argument('--disable-dev-shm-usage')
         # chrome_options.add_argument('start-maximized')

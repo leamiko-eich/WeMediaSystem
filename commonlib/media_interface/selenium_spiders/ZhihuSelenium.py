@@ -109,7 +109,7 @@ class ZhihuSelenium(BaseSelenium):
  
 
 
-    def publish_article(self, article_title, article_content):
+    def publish_article(self, article_title, article_content, flag_debug=False):
         chrome_options = self.get_chrome_options()
 
         driver = self.driver
@@ -146,29 +146,16 @@ class ZhihuSelenium(BaseSelenium):
         # time.sleep(2)
 
         btn_publish = driver.find_element(By.CSS_SELECTOR, '.Button.css-d0uhtl.Button--primary.Button--blue')
-        btn_publish.click()
+        if flag_debug:
+            print("测试环节，不发布")
+        else:
+            btn_publish.click()
 
 
 
         
 
         time.sleep(30)
-        return
-        # Click the "写文章" button
-        write_article_button = self.driver.find_element_by_xpath("//button[@class='Button WriteIndex-articleButton Button--primary Button--blue']")
-        write_article_button.click()
-        
-        # Input the article title
-        title_input = self.driver.find_element_by_xpath("//input[@class='Input WriteIndex-titleInput']")
-        title_input.send_keys(article_title)
-        
-        # Input the article content
-        content_input = self.driver.find_element_by_xpath("//div[@class='public-DraftEditor-content']")
-        content_input.send_keys(article_content)
-        
-        # Click the "发布" button
-        publish_button = self.driver.find_element_by_xpath("//button[@class='Button PublishPanel-submitButton Button--primary Button--blue']")
-        publish_button.click( )
 
     def crawl_by_author_link(self, url=None):
         assert(url is not None)
@@ -236,17 +223,18 @@ if __name__ == "__main__":
     content ="Good Good Study, Day Day Up. 是的"
     username = '251132021@qq.com'
     # obj_zhihu_selenium.login_with_password(username)
-    # obj_zhihu_selenium.login_with_cookie(username)
-    # obj_zhihu_selenium.publish_article(title, content)
+    obj_zhihu_selenium.login_with_cookie(username)
+    obj_zhihu_selenium.publish_article(title, content, flag_debug=True)
+    obj_zhihu_selenium.quit_driver()
 
     url = "https://www.zhihu.com/people/jiafeimao/posts"
-    link_art_url = obj_zhihu_selenium.crawl_by_author_link(url)
+    #link_art_url = obj_zhihu_selenium.crawl_by_author_link(url)
 
     # art_url  ="http://zhuanlan.zhihu.com/p/574523304"
     #dic_ret = obj_zhihu_selenium.parse_specific_article(art_url)
     #print(dic_ret)
 
-    for dic_url  in link_art_url:
-        original_link = dic_url['original_link']
-        dic_ret = obj_zhihu_selenium.parse_specific_article(original_link)
-        print(dic_ret)
+    # for dic_url  in link_art_url:
+        # original_link = dic_url['original_link']
+        # dic_ret = obj_zhihu_selenium.parse_specific_article(original_link)
+        # print(dic_ret)
