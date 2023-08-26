@@ -114,8 +114,10 @@ class BaseSelenium(object):
             chrome_options.add_argument('--log-level=3')
 
         if self.is_linux:
-            WEB_DRIVER_PATH = '/usr/local/bin/chromedriver'
-            driver = webdriver.Chrome(options=chrome_options, executable_path=WEB_DRIVER_PATH)
+            #WEB_DRIVER_PATH = '/usr/local/bin/chromedriver'
+            WEB_DRIVER_PATH = 'chromedriver'
+            #driver = webdriver.Chrome(options=chrome_options, executable_path=WEB_DRIVER_PATH)
+            driver = webdriver.Chrome(executable_path='chromedriver')
         else:
             driver = webdriver.Chrome(options=chrome_options)
    
