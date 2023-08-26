@@ -3,6 +3,7 @@ from system_config import *
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service as ChromeService
 from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.chrome.service import Service
 import time,sys
 import os, json
 from configparser import ConfigParser
@@ -117,7 +118,11 @@ class BaseSelenium(object):
             #WEB_DRIVER_PATH = '/usr/local/bin/chromedriver'
             WEB_DRIVER_PATH = 'chromedriver'
             #driver = webdriver.Chrome(options=chrome_options, executable_path=WEB_DRIVER_PATH)
-            driver = webdriver.Chrome(executable_path='chromedriver')
+            #driver = webdriver.Chrome(executable_path='chromedriver')
+            WEB_DRIVER_PATH = "/usr/local/bin/chromedriver "
+            service = Service(WEB_DRIVER_PATH)
+            driver = webdriver.Chrome(service=service, options=chrome_options)
+
         else:
             driver = webdriver.Chrome(options=chrome_options)
    

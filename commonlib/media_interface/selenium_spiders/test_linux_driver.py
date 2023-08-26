@@ -1,6 +1,7 @@
 #encoding=utf-8
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service
 print(webdriver.__file__)
 print(webdriver.__version__)
 
@@ -16,4 +17,5 @@ chrome_options.add_argument('--disable-infobars')
 chrome_options.add_argument('enable-features=NetworkServiceInProcess')
 
 WEB_DRIVER_PATH = "/usr/local/bin/chromedriver "
-driver = webdriver.Chrome(executable_path=WEB_DRIVER_PATH, options=chrome_options)
+service = Service(WEB_DRIVER_PATH)
+driver = webdriver.Chrome(service=service, options=chrome_options)
