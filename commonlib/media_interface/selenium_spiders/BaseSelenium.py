@@ -113,7 +113,11 @@ class BaseSelenium(object):
             chrome_options.add_argument('--headless')  
             chrome_options.add_argument('--log-level=3')
 
-        driver = webdriver.Chrome(options=chrome_options)
+        if self.is_linux:
+            WEB_DRIVER_PATH = '/usr/local/bin/chromedriver'
+            driver = webdriver.Chrome(options=chrome_options, executable_path=WEB_DRIVER_PATH)
+        else:
+            driver = webdriver.Chrome(options=chrome_options)
    
         time.sleep(2)
         print("login_url:%s" % (self.login_url))
