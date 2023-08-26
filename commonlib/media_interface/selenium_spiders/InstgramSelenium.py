@@ -137,10 +137,10 @@ class InstgramSelenium(BaseSelenium):
         self.save_element_html(div_continue_button, 'instgram_div_continue_button.html')
         if flag_debug:
             print("test, not publish")
+            self.time_wait(30, 5)
         else:
             div_continue_button.click()
 
-        self.time_wait(30, 5)
 
 
 

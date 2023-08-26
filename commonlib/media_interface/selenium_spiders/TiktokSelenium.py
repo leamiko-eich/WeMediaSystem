@@ -14,16 +14,14 @@ from selenium.webdriver.common.keys import Keys
 
 class TiktokSelenium(BaseSelenium):
     name_platform = 'Tiktok'
-    def __init__(self):
+    def __init__(self, useHead=True):
         super().__init__()
         self.name_selenium = 'Tiktok'
         self.login_url = 'https://www.tiktok.com/'
 
         self.driver = None
+        self.useHead = useHead
 
-    def output_cookies(self, cookies):
-        for cookie in cookies:
-            print(cookie)
 
     def login_with_password(self, username='', wait_time=50):
         chrome_options = webdriver.ChromeOptions()
@@ -77,31 +75,30 @@ class TiktokSelenium(BaseSelenium):
         chrome_options.add_argument('--disable-infobars')
         return chrome_options
 
-    def publish_video(self):
+    def publish_video(self, flag_debug=False):
         ## input参数
-        path_video = 'H:/6-2.MP4'
+        path_video = self.path_video
         title_video  ='今天说点什么'
 
         url_upload = 'https://www.tiktok.com/upload?lang=zh-CN'
 
         ## output
-        chrome_options = self.get_chrome_options()
         driver = self.driver
         driver : webdriver.Chrome = driver
 
         print("第1次刷新upload")
         driver.get(url_upload)
-        time.sleep(10)
+        time.sleep(5)
 
         print("第2次刷新upload")
         driver.get(url_upload)
-        time.sleep(30)
+        time.sleep(10)
         self.save_driver_html(driver, 'tiktok_upload.html')
 
         ## 先获取iframe元素
         iframe = driver.find_element(By.CSS_SELECTOR, "iframe")
         self.save_element_html(iframe, 'iframe_before.html')
-        time.sleep(20)
+        time.sleep(10)
 
         # 切换到iframe 内部 
         print("切换到内部")
@@ -149,12 +146,14 @@ class TiktokSelenium(BaseSelenium):
         
         ## 发布
         btn_submit = driver.find_element(By.CSS_SELECTOR, '.jsx-3366794632.btn-post')       
-        btn_submit.click()
+        if flag_debug:
+            print("点击发布，测试模式")
+            self.time_wait(30, 5)
+        else:
+            btn_submit.click()
 
 
         
-        time.sleep(30)
-        return
 
     def publish_article(self, article_title, article_content):
         chrome_options = self.get_chrome_options()
@@ -167,15 +166,31 @@ class TiktokSelenium(BaseSelenium):
         
         
 if __name__ == "__main__":
-    tiktok_selenium = TiktokSelenium()
+    import sys
+    flag_debug = True
+    if len(sys.argv)>1:
+        debug = sys.argv[1]
+        if debug=="1": 
+            flag_debug = False
+
+    tiktok_selenium = TiktokSelenium(useHead=False)
     title = "diary - how about today"
     content ="Good Good Study, Day Day Up. 是的"
     username = '18511400319'
+    dic_info = {
+        "c_title": title,
+        "c_content": content,
+        "path_win_video" : 'H:/3.mp4',
+        "path_linux_video" : '/home/jeff/code/WeMediaSystem/commonlib/media_interface/selenium_spiders/images/3.mp4',
+        "path_win_image" : 'H:/2.jpeg',
+        "path_linux_image" : '/home/jeff/code/WeMediaSystem/commonlib/media_interface/selenium_spiders/images/2.jpeg'
+    }
+    tiktok_selenium.get_content_fron_dict(dic_info)
     # tiktok_selenium.login_with_password(username, wait_time=100)
     driver = tiktok_selenium.login_with_cookie(username, wait_time=10)
     # tiktok_selenium.publish_article(title, content)
 
-    tiktok_selenium.publish_video()
+    tiktok_selenium.publish_video(flag_debug=flag_debug)
 
     
     tiktok_selenium.quit_driver()
