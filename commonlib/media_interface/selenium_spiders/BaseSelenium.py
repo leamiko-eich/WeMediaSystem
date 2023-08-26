@@ -70,17 +70,17 @@ class BaseSelenium(object):
         pass
         
     def save_driver_html(self, driver: webdriver, file_name="1.html"):
-        file_name = "data/%s" % file_name
+        file_name = "htmls/%s" % file_name
         with open(file_name, "w", encoding="utf-8") as f:
             f.write(driver.page_source)
 
     def save_element_html(self, element, file_name="1.html"):
-        file_name = "data/%s" % file_name
+        file_name = "htmls/%s" % file_name
         with open(file_name, "w", encoding="utf-8") as f:
             f.write(element.get_attribute("outerHTML"))
 
     def save_soup_html(self, soup, file_name='1.html'):
-        with open('data/%s'%(file_name), 'w', encoding='utf-8') as f:
+        with open('htmls/%s'%(file_name), 'w', encoding='utf-8') as f:
             f.write(soup.prettify())
 
     def set_driver(self, driver):

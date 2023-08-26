@@ -14,17 +14,14 @@ from selenium.webdriver.common.keys import Keys
 
 class BzhanSelenium(BaseSelenium):
     name_platform = 'Bzhan'
-    def __init__(self):
+    def __init__(self, useHead=True):
         super().__init__()
         self.name_selenium = 'Bzhan'
         self.login_url = 'https://accounts.douban.com/passport/login'
         self.login_url = 'https://www.bilibili.com/'
 
         self.driver = None
-
-    def output_cookies(self, cookies):
-        for cookie in cookies:
-            print(cookie)
+        self.useHead = useHead
 
     def login_with_password(self, username=''):
         chrome_options = webdriver.ChromeOptions()
@@ -63,49 +60,17 @@ class BzhanSelenium(BaseSelenium):
         time.sleep(30)
         driver.quit()
 
-    def get_chrome_options(self):
-        chrome_options = Options()
-    
-        chrome_options.add_argument("window-size=1024,768")
-        chrome_options.add_argument('user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.107 Safari/537.36')
-   
-        chrome_options.add_argument('--no-sandbox')
-        chrome_options.add_argument('--disable-dev-shm-usage')
-        # chrome_options.add_argument('start-maximized')
-        chrome_options.add_argument("--disable-extensions")
-        chrome_options.add_argument('--disable-browser-side-navigation')
-        chrome_options.add_argument('enable-automation')
-        chrome_options.add_argument('--disable-infobars')
-        return chrome_options
 
-
-    def publish_article(self, article_title, article_content):
-        chrome_options = self.get_chrome_options()
+    def publish_article(self, article_title, article_content, flag_debug=True):
 
         driver = self.driver
         print("type driver:", type(driver))
         driver : webdriver.Chrome = driver
 
-
-        ## 点击投稿按钮
-        button_write_article = driver.find_element(By.CLASS_NAME, 'header-upload-entry__text')
-        self.save_element_html(button_write_article, 'button_write_article.html')
-        button_write_article.click()
-
-        
-        ## 切换到新窗口
-        print("prev url:",  driver.current_url)
-        self.switch_to_new_windows(driver)
-        print("after url:",  driver.current_url)
-        self.save_driver_html(driver, 'driver.html')
-
-
-        nav_bar = driver.find_element(By.CLASS_NAME, "upload-nav")  
-
-        # 根据链接文本内容定位到"专栏投稿"链接
-        column_link = nav_bar.find_element(By.LINK_TEXT, "专栏投稿")
-        column_link.click()
-        time.sleep(2)
+        print("进入文章专栏界面")
+        url_publish_article = 'https://member.bilibili.com/platform/upload/text/edit'
+        driver.get(url_publish_article)
+        time.sleep(5)
 
         self.save_driver_html(driver, 'driver.html')
 
@@ -164,7 +129,10 @@ class BzhanSelenium(BaseSelenium):
         ## 最后提交按钮
         bnt_final_submit = driver.find_element(By.CSS_SELECTOR, '.ui-btn.blue-radius')
         self.save_element_html(bnt_final_submit, 'bnt_final_submit.html')
-        bnt_final_submit.click()
+        if flag_debug:
+            print("debug模式，不提交")
+        else:
+            bnt_final_submit.click()
         time.sleep(2)
 
         ## 切回到主页面
@@ -172,40 +140,31 @@ class BzhanSelenium(BaseSelenium):
         self.save_driver_html(driver, 'main_default.html')
         
 
-        time.sleep(60)
-        return
-
-        time.sleep(15)
-
-        
-
-        # iframe_content = driver.find_element(By.CLASS_NAME, 'public-DraftStyleDefault-block public-DraftStyleDefault-ltr')
-
-
-        btn_publish = driver.find_element(By.CLASS_NAME, 'editor-extra-button-submit')
-        btn_publish.click()
-        time.sleep(2)
-
-        box_publish = driver.find_element(By.CLASS_NAME, 'editor-popup-setting-submit')
-        self.save_element_html(box_publish,'box_publish.html')
-
-        final_pub_btn = box_publish.find_element(By.CSS_SELECTOR, 'button[type="submit"]')
-        self.save_element_html(final_pub_btn,'final_pub_bnt.html')
-        final_pub_btn.click()
-
-
-
-        
-
-        time.sleep(30)
-        return
         
         
 if __name__ == "__main__":
-    bzhan_selenium = BzhanSelenium()
+    import sys
+    flag_debug = True
+    if len(sys.argv)>1:
+        debug = sys.argv[1]
+        if debug=="1": 
+            flag_debug = False
+
+    # bzhan_selenium = BzhanSelenium(useHead=False)
+    bzhan_selenium = BzhanSelenium(useHead=True)
     title = "个人笔记 - 今天怎么样"
     content ="Good Good Study, Day Day Up. 是的"
     username = '18511400319'
+    dic_info = {
+        "c_title": title,
+        "c_content": content,
+        "path_win_video" : 'H:/3.mp4',
+        "path_linux_video" : '/home/jeff/code/WeMediaSystem/commonlib/media_interface/selenium_spiders/images/3.mp4',
+        "path_win_image" : 'H:/2.jpeg',
+        "path_linux_image" : '/home/jeff/code/WeMediaSystem/commonlib/media_interface/selenium_spiders/images/2.jpeg'
+    }
+    bzhan_selenium.get_content_fron_dict(dic_info)
     # bzhan_selenium.login_with_password(username)
     driver = bzhan_selenium.login_with_cookie(username)
-    bzhan_selenium.publish_article(title, content)
+    bzhan_selenium.publish_article(title, content, flag_debug=flag_debug)
+    bzhan_selenium.quit_driver()

@@ -10,15 +10,18 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 class DouyinSelenium(BaseSelenium):
     name_platform = 'Douyin'
-    def __init__(self):
+    def __init__(self, useHead=True):
         super().__init__()
         self.name_selenium = 'Douyin'
         self.login_url = 'https://creator.douyin.com/'
 
         self.driver = None
+        self.useHead = useHead
 
     def output_cookies(self, cookies):
         for cookie in cookies:
@@ -62,39 +65,29 @@ class DouyinSelenium(BaseSelenium):
         time.sleep(30)
         driver.quit()
 
-    def get_chrome_options(self):
-        chrome_options = Options()
-    
-        chrome_options.add_argument("window-size=1024,768")
-        chrome_options.add_argument('user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.107 Safari/537.36')
-   
-        chrome_options.add_argument('--no-sandbox')
-        chrome_options.add_argument('--disable-dev-shm-usage')
-        # chrome_options.add_argument('start-maximized')
-        chrome_options.add_argument("--disable-extensions")
-        chrome_options.add_argument('--disable-browser-side-navigation')
-        chrome_options.add_argument('enable-automation')
-        chrome_options.add_argument('--disable-infobars')
-        return chrome_options
 
 
-    def publish_video(self):
+    def publish_video(self, flag_debug=True):
         ## 输入参数
-        path_video = 'H:/6-2.MP4'
+        path_video = self.path_video
         title_video  ='今天说点什么'
 
-        chrome_options = self.get_chrome_options()
 
         driver = self.driver
         print("type driver:", type(driver))
         driver : webdriver.Chrome = driver
 
         ## 打开视频发布界面
+        print("打开视频发布界面, 加载时间长")
         url = 'https://creator.douyin.com/creator-micro/content/upload'
         driver.get(url)
-        time.sleep(15)
+
+        wait = WebDriverWait(driver, 30)
+        wait.until(EC.presence_of_element_located((By.CLASS_NAME, "container--1GAZf")))
+        # time.sleep(15)
 
         ## 寻找视频输入窗口
+        print("输入视频")
         ele_box = driver.find_element(By.CLASS_NAME, 'container--1GAZf')
         self.save_element_html(ele_box)
         input_element = driver.find_element(By.CSS_SELECTOR, 'input[type="file"]')
@@ -124,10 +117,12 @@ class DouyinSelenium(BaseSelenium):
         ## 发布按钮 
         publish_btn = driver.find_element(By.XPATH, '//button[text()="发布"]')
         self.save_element_html(publish_btn, 'publish_bnt.html')
-        publish_btn.click()
+        if flag_debug:
+            print("调试模式，不发布")
+            self.time_wait(50, 5)
+        else:
+            publish_btn.click()
         
-        time.sleep(50)
-        return
 
 
     def publish_article(self, article_title, article_content):
@@ -164,23 +159,35 @@ class DouyinSelenium(BaseSelenium):
 
 
         time.sleep(30)
-        return 
-        ## 点击投稿按钮
-        button_write_article = driver.find_element(By.CLASS_NAME, 'header-upload-entry__text')
-        self.save_element_html(button_write_article, 'button_write_article.html')
-        button_write_article.click()
 
         
 
         
         
 if __name__ == "__main__":
-    douyin_selenium = DouyinSelenium()
+    import sys
+    flag_debug = True
+    if len(sys.argv)>1:
+        debug = sys.argv[1]
+        if debug=="1": 
+            flag_debug = False
+
+    douyin_selenium = DouyinSelenium(useHead=False)
+    # douyin_selenium = DouyinSelenium(useHead=True)
     title = "个人笔记 - 今天怎么样"
     content ="Good Good Study, Day Day Up. 是的"
     username = '18511400319'
+    dic_info = {
+        "c_title": title,
+        "c_content": content,
+        "path_win_video" : 'H:/3.mp4',
+        "path_linux_video" : '/home/jeff/code/WeMediaSystem/commonlib/media_interface/selenium_spiders/images/3.mp4',
+        "path_win_image" : 'H:/2.jpeg',
+        "path_linux_image" : '/home/jeff/code/WeMediaSystem/commonlib/media_interface/selenium_spiders/images/2.jpeg'
+    }
+    douyin_selenium.get_content_fron_dict(dic_info)
     # douyin_selenium.login_with_password(username)
     driver = douyin_selenium.login_with_cookie(username, wait_time=10)
     # douyin_selenium.publish_article(title, content)
-    douyin_selenium.publish_video()
+    douyin_selenium.publish_video(flag_debug=flag_debug)
     douyin_selenium.quit_driver()
