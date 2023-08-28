@@ -7,6 +7,7 @@ from selenium import webdriver
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
 import time, json
 
 class PinterestSelenium(BaseSelenium):
@@ -56,50 +57,39 @@ class PinterestSelenium(BaseSelenium):
 
     def publish_article(self, title, content):
         driver: webdriver.Chrome = self.get_driver()
-        self.login_url = 'https://mp.toutiao.com/profile_v4/graphic/publish?from=toutiao_pc'
+        self.login_url = 'https://www.pinterest.com/idea-pin-builder/'
         driver.get(self.login_url)
         time.sleep(3)
 
-        # 这部分等江峰解决，如何虚拟点击发布文章按钮。
+        # 找到"新建"按钮并点击它
+        new_button = driver.find_element(By.XPATH,'//div[text()="新建"]')
+        new_button.click()
+        time.sleep(3)
 
-        input_title = driver.find_element(By.CSS_SELECTOR, 'div.publish-editor-title-inner textarea')
-        input_title.send_keys(title)
-        time.sleep(2)
-
-        # 输入正文内容
-        div_element = driver.find_element(By.CSS_SELECTOR, 'div.ProseMirror')
-        div_element.send_keys(content)
-        time.sleep(4)
-        driver.execute_script("window.scrollBy(0, 500);")  # 500为滚动的像素值
-        # '是否单标题'
-        single_title_input = driver.find_element(By.CSS_SELECTOR, 'div.byte-radio-inner ')
-        single_title_input.click()
-        time.sleep(4)
-
-        # 添加封面图片
-        svg_element = driver.find_element(By.CSS_SELECTOR, 'svg.add-icon.byte-icon.byte-icon-plus')
-        svg_element.click()
-        time.sleep(4)
-
-        input_element = driver.find_element(By.CSS_SELECTOR, 'input[type="file"]')
         # 输入文件路径到<input>元素
+        input_element = driver.find_element(By.ID, 'storyboard-upload-input')
         file_path = "C:/Users/chongqingwei/Desktop/1.jpg"  # 本地文件的路径
         input_element.send_keys(file_path)
         time.sleep(2)
-        # 上传完以后点击确定按钮
-        button_element = driver.find_element(By.CSS_SELECTOR, 'button[data-e2e="imageUploadConfirm-btn"]')
-        button_element.click()
-        time.sleep(2)
 
-        # 定位到预览并发布按钮的元素
-        preview_publish_button = driver.find_element(By.XPATH, '//button[contains(span, "预览并发布")]')
-
-        preview_publish_button.click()
+        # 输入标题
+        input_title = driver.find_element(By.ID, 'storyboard-selector-title')
+        input_title.clear()
+        input_title.send_keys(title)
         time.sleep(2)
-        # 定位到确认发布按钮的元素
-        confirm_publish_button = driver.find_element(By.XPATH, '//button[contains(span, "确认发布")]')
-        # 点击确认发布按钮
-        confirm_publish_button.click()
+        # driver.execute_script("window.scrollBy(0, 150);")  # 500为滚动的像素值
+        # 输入正文内容
+        content_field = driver.find_element(By.CSS_SELECTOR, '.DraftEditor-editorContainer [contenteditable="true"]')
+        content_field.click()
+        # 模拟按键输入
+        content_field.send_keys(Keys.CONTROL + "a")  # 选择所有文本
+        content_field.send_keys(Keys.DELETE)  # 删除选中的文本
+        content_field.send_keys(content)  # 输入你的内容
+        time.sleep(4)
+        # Click the "发布" button
+        publish_button = driver.find_element(By.XPATH,'//div[text()="发布"]')
+        publish_button.click()
+
         time.sleep(2)
         driver.quit()
 
@@ -113,5 +103,5 @@ if __name__ == "__main__":
     content ="Good Good Study, Day Day Up. 是的"
     username = 'chongqingwei1@outlook.com'
     # obj_Pinterest.login_with_password(username)
-    obj_Pinterest.login_with_cookie(username, wait_time=5)
+    obj_Pinterest.login_with_cookie(username, wait_time=3)
     obj_Pinterest.publish_article(title, content)
