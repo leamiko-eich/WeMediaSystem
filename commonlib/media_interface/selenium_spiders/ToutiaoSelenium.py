@@ -231,6 +231,7 @@ class Crawler(BaseSelenium):
         driver.quit()
         return author_articles
 
+
     def publish_article(self, title, content, author='Lengxiao'):
         driver: webdriver.Chrome = self.get_driver()
         self.login_url = 'https://mp.toutiao.com/profile_v4/graphic/publish?from=toutiao_pc'
@@ -246,12 +247,23 @@ class Crawler(BaseSelenium):
 
         # 输入正文内容
         div_element = driver.find_element(By.CSS_SELECTOR, 'div.ProseMirror')
-        div_element.send_keys(content)
+        # 输入正文内容
+        div_element.send_keys("我是谁？在哪里？")
+        # 设置字体大小和颜色
+        # 使用JavaScript设置字体大小和颜色
+        driver.execute_script("arguments[0].style.fontSize = '24px';", div_element)  # 没搞定，设置不了
+        driver.execute_script("arguments[0].style.color = 'red';", div_element)  # 设置字体颜色为红色
+        driver.execute_script("arguments[0].style.fontWeight = 'bold';", div_element)  # 设置文本加粗
+
+        div_element.send_keys(Keys.ENTER)
+        # sleep for a while to make sure the changes are visible
         time.sleep(4)
-        driver.execute_script("window.scrollBy(0, 500);")  # 500为滚动的像素值
+        driver.execute_script("window.scrollBy(0, 300);")  # 500为滚动的像素值
         #'是否单标题'
-        single_title_input = driver.find_element(By.CSS_SELECTOR, 'div.byte-radio-inner ')
-        single_title_input.click()
+        # 这里使用XPath来定位"单标题"选项
+        # 找到元素并执行点击操作
+        radio_button = driver.find_element(By.XPATH,"//span[@class='byte-radio-inner-text' and text()='单标题']")
+        radio_button.click()
         time.sleep(4)
 
         # 添加封面图片
@@ -294,12 +306,11 @@ if __name__ == '__main__':
     # ob_Crawler.gather()
     ob_Crawler.load_user_pass(section_name='toutiao')
     # ob_Crawler.login_with_password(username)
-    ob_Crawler.login_with_cookie(username)
-    author_articles = ob_Crawler.search(toutiao_url)
-    title = author_articles[0]['article_title']
-    content = author_articles[0]['article_content']
-    author = 'Lengxiao'
-    ob_Crawler.load_user_pass(section_name='toutiao')
+    # author_articles = ob_Crawler.search(toutiao_url)
+    # title = author_articles[0]['article_title']
+    # content = author_articles[0]['article_content']
+    # author = 'Lengxiao'
+    # ob_Crawler.load_user_pass(section_name='toutiao')
     # ob_Crawler.login_with_password(username)
     ob_Crawler.login_with_cookie(username)
-    ob_Crawler.publish_article(title=title, content=content, author=author)
+    ob_Crawler.publish_article(title='你好', content='你好！！', author='冷萧')
