@@ -14,11 +14,10 @@ from selenium.webdriver.support import expected_conditions as EC
 
 
 class Crawler(BaseSelenium):
-    def __init__(self, useHead=True):
+    def __init__(self):
         super().__init__()
         self.name_selenium = 'ToutiaoPublic'
         self.login_url = 'https://www.toutiao.com/'
-        self.useHead = useHead
         # pass
 
     def save_element_html(self, element, file_name="1.html"):
@@ -252,7 +251,7 @@ class Crawler(BaseSelenium):
         div_element.send_keys("我是谁？在哪里？")
         # 设置字体大小和颜色
         # 使用JavaScript设置字体大小和颜色
-        driver.execute_script("arguments[0].setAttribute('style', 'font-size: 20px;')", div_element) # 设置字体大小为20像素
+        driver.execute_script("arguments[0].style.fontSize = '24px';", div_element)  # 没搞定，设置不了
         driver.execute_script("arguments[0].style.color = 'red';", div_element)  # 设置字体颜色为红色
         driver.execute_script("arguments[0].style.fontWeight = 'bold';", div_element)  # 设置文本加粗
 
@@ -300,7 +299,7 @@ class Crawler(BaseSelenium):
 
 if __name__ == '__main__':
     http_name = 'www.toutiao.com'
-    ob_Crawler = Crawler(useHead=True)
+    ob_Crawler = Crawler()
     # username = '18335948033'
     username = '18710090164'
     toutiao_url = 'https://www.toutiao.com/c/user/token/MS4wLjABAAAAUZKG_KuaxVrOMiwDd3QXX0ZB3Nh4bcv7AFs9ZFpJQMo/?'
