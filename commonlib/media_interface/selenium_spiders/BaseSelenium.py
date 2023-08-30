@@ -129,7 +129,7 @@ class BaseSelenium(object):
             WEB_DRIVER_PATH = 'chromedriver'
             #driver = webdriver.Chrome(options=chrome_options, executable_path=WEB_DRIVER_PATH)
             #driver = webdriver.Chrome(executable_path='chromedriver')
-            WEB_DRIVER_PATH = "/usr/local/bin/chromedriver "
+            WEB_DRIVER_PATH = "/usr/local/bin/chromedriver"
             service = Service(WEB_DRIVER_PATH)
             driver = webdriver.Chrome(service=service, options=chrome_options)
 
