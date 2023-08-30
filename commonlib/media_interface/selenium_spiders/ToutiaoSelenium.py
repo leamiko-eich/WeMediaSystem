@@ -289,9 +289,10 @@ class Crawler(BaseSelenium):
         preview_publish_button.click()
         time.sleep(2)
         # 定位到确认发布按钮的元素
-        confirm_publish_button = driver.find_element(By.XPATH, '//button[contains(span, "确认发布")]')
-        # 点击确认发布按钮
-        confirm_publish_button.click()
+        print('测试不发布')
+        # confirm_publish_button = driver.find_element(By.XPATH, '//button[contains(span, "确认发布")]')
+        # # 点击确认发布按钮
+        # confirm_publish_button.click()
         time.sleep(2)
         driver.quit()
 
