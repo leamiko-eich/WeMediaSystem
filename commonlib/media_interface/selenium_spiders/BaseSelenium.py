@@ -123,7 +123,6 @@ class BaseSelenium(object):
             print("使用headless 模式")
             chrome_options.add_argument('--headless')  
             chrome_options.add_argument('--log-level=3')
-            chrome_options.add_argument('--disable-dev-shm-usage')
 
         if self.is_linux:
             #WEB_DRIVER_PATH = '/usr/local/bin/chromedriver'
