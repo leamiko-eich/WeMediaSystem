@@ -14,10 +14,11 @@ from selenium.webdriver.support import expected_conditions as EC
 
 
 class Crawler(BaseSelenium):
-    def __init__(self):
+    def __init__(self, useHead=True):
         super().__init__()
         self.name_selenium = 'ToutiaoPublic'
         self.login_url = 'https://www.toutiao.com/'
+        self.useHead = useHead
         # pass
 
     def save_element_html(self, element, file_name="1.html"):
@@ -299,7 +300,7 @@ class Crawler(BaseSelenium):
 
 if __name__ == '__main__':
     http_name = 'www.toutiao.com'
-    ob_Crawler = Crawler()
+    ob_Crawler = Crawler(useHead=False)
     # username = '18335948033'
     username = '18710090164'
     toutiao_url = 'https://www.toutiao.com/c/user/token/MS4wLjABAAAAUZKG_KuaxVrOMiwDd3QXX0ZB3Nh4bcv7AFs9ZFpJQMo/?'
