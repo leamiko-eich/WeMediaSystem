@@ -13,11 +13,11 @@ from selenium.webdriver.common.keys import Keys
 
 class QiehaoSelenium(BaseSelenium):
     name_platform = 'Qiehao'
-    def __init__(self):
+    def __init__(self, useHead=True):
         super().__init__()
         self.name_selenium = 'Qiehao'
         self.login_url = 'https://om.qq.com/'
-
+        self.useHead = useHead
         self.driver = None
 
     def output_cookies(self, cookies):
@@ -102,6 +102,10 @@ class QiehaoSelenium(BaseSelenium):
         single_title_input = driver.find_element(By.CSS_SELECTOR, 'label.omui-radio')
         single_title_input.click()
         time.sleep(4)
+        if not self.useHead:
+            print('测试不发布')
+            time.sleep(2)
+            driver.quit()
 
         # 添加封面图片
         img_elements = driver.find_elements(By.TAG_NAME, "img")
@@ -153,7 +157,7 @@ class QiehaoSelenium(BaseSelenium):
 
         
 if __name__ == "__main__":
-    obj_qiehao_selenium = QiehaoSelenium()
+    obj_qiehao_selenium = QiehaoSelenium(useHead=False)
     title = "个人笔记 - 今天怎么样"
     content ="Good Good Study, Day Day Up. 是的"
     username = '251132021'

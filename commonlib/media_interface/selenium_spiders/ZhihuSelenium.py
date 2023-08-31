@@ -16,11 +16,11 @@ from bs4 import BeautifulSoup
 
 class ZhihuSelenium(BaseSelenium):
     name_platform = 'Zhihu'
-    def __init__(self):
+    def __init__(self, useHead=True):
         super().__init__()
         self.name_selenium = 'Zhihu'
         self.login_url = 'https://www.zhihu.com'
-
+        self.useHead = useHead
         self.driver = None
 
     def output_cookies(self, cookies):
@@ -218,7 +218,7 @@ class ZhihuSelenium(BaseSelenium):
         
         
 if __name__ == "__main__":
-    obj_zhihu_selenium = ZhihuSelenium()
+    obj_zhihu_selenium = ZhihuSelenium(useHead=False)
     title = "个人笔记 - 今天怎么样"
     content ="Good Good Study, Day Day Up. 是的"
     username = '251132021@qq.com'

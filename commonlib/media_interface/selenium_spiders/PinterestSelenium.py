@@ -12,11 +12,12 @@ import time, json
 
 class PinterestSelenium(BaseSelenium):
     name_platform = 'Pinterest'
-    def __init__(self):
+    def __init__(self, useHead=True):
         super().__init__()
         self.name_selenium = 'Pinterest'
         # self.login_url = 'https://www.Pinterest.com'
         self.login_url = 'https://www.pinterest.com/'
+        self.useHead = useHead
 
     def login_with_password(self, username=''):
         print("username: %s" % (username))
@@ -86,6 +87,10 @@ class PinterestSelenium(BaseSelenium):
         content_field.send_keys(Keys.DELETE)  # 删除选中的文本
         content_field.send_keys(content)  # 输入你的内容
         time.sleep(4)
+        if not self.useHead:
+            print('测试不发布')
+            time.sleep(2)
+            driver.quit()
         # Click the "发布" button
         publish_button = driver.find_element(By.XPATH,'//div[text()="发布"]')
         publish_button.click()
@@ -98,7 +103,7 @@ class PinterestSelenium(BaseSelenium):
     
 
 if __name__ == "__main__":
-    obj_Pinterest = PinterestSelenium()
+    obj_Pinterest = PinterestSelenium(useHead=False)
     title = "个人笔记 - 今天怎么样"
     content ="Good Good Study, Day Day Up. 是的"
     username = 'chongqingwei1@outlook.com'

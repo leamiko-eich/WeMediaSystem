@@ -11,11 +11,12 @@ import time, json
 
 class XiaohongshuSelenium(BaseSelenium):
     name_platform = 'Xiaohongshu'
-    def __init__(self):
+    def __init__(self, useHead=True):
         super().__init__()
         self.name_selenium = 'Xiaohongshu'
         # self.login_url = 'https://www.xiaohongshu.com'
         self.login_url = 'https://creator.xiaohongshu.com'
+        self.useHead = useHead
 
     def login_with_password(self, username=''):
         print("username: %s" % (username))
@@ -83,6 +84,10 @@ class XiaohongshuSelenium(BaseSelenium):
         editable_element.send_keys(content)
         driver.execute_script("window.scrollBy(0, 30);")  # 500为滚动的像素值
         # 定位到发布按钮
+        if not self.useHead:
+            print('测试不发布')
+            time.sleep(2)
+            driver.quit()
         publish_button = driver.find_element(By.CLASS_NAME, 'css-k3hpu2')
         # Click the "发布" button
         publish_button.click()
@@ -94,7 +99,7 @@ class XiaohongshuSelenium(BaseSelenium):
     
 
 if __name__ == "__main__":
-    obj_xiaohongshu = XiaohongshuSelenium()
+    obj_xiaohongshu = XiaohongshuSelenium(useHead=False)
     title = "个人笔记 - 今天怎么样"
     content ="Good Good Study, Day Day Up. 是的"
     username = '18710090164'
