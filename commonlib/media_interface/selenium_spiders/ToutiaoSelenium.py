@@ -260,9 +260,10 @@ class Crawler(BaseSelenium):
         # sleep for a while to make sure the changes are visible
         time.sleep(4)
         driver.execute_script("window.scrollBy(0, 300);")  # 500为滚动的像素值
-        #'是否单标题'
-        # 这里使用XPath来定位"单标题"选项
-        # 找到元素并执行点击操作
+        # 使用XPath定位并点击SVG元素
+        svg_element = driver.find_element(By.CLASS_NAME,'byte-icon-fold')
+        svg_element.click()
+        # '是否单标题'
         radio_button = driver.find_element(By.XPATH,"//span[@class='byte-radio-inner-text' and text()='单标题']")
         radio_button.click()
         time.sleep(4)
