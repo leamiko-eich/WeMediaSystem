@@ -104,6 +104,7 @@ class QiehaoSelenium(BaseSelenium):
             print('测试不发布')
             time.sleep(2)
             driver.quit()
+            return
 
         # 添加封面图片
         img_elements = driver.find_elements(By.TAG_NAME, "img")
@@ -148,14 +149,14 @@ class QiehaoSelenium(BaseSelenium):
         # 点击按钮
         publish_button.click()
 
-
+        print('发表成功了')
         time.sleep(2)
 
         driver.quit()
 
         
 if __name__ == "__main__":
-    obj_qiehao_selenium = QiehaoSelenium(useHead=True)
+    obj_qiehao_selenium = QiehaoSelenium(useHead=False)
     title = "个人笔记 - 今天怎么样"
     content ="Good Good Study, Day Day Up. 是的"
     username = '251132021'
