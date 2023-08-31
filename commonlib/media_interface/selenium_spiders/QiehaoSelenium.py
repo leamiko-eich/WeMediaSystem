@@ -155,7 +155,7 @@ class QiehaoSelenium(BaseSelenium):
 
         
 if __name__ == "__main__":
-    obj_qiehao_selenium = QiehaoSelenium(useHead=False)
+    obj_qiehao_selenium = QiehaoSelenium(useHead=True)
     title = "个人笔记 - 今天怎么样"
     content ="Good Good Study, Day Day Up. 是的"
     username = '251132021'

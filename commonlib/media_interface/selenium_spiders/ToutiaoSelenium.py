@@ -280,6 +280,7 @@ class Crawler(BaseSelenium):
             print('测试不发布')
             time.sleep(2)
             driver.quit()
+            return
 
         file_path = "C:/Users/chongqingwei/Desktop/1.jpg"  # 本地文件的路径
         input_element.send_keys(file_path)
