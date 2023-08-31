@@ -8,8 +8,6 @@ from selenium.webdriver.firefox.firefox_profile import FirefoxProfile
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.keys import Keys
-import pyautogui
-from selenium.webdriver.common.keys import Keys
 
 class QiehaoSelenium(BaseSelenium):
     name_platform = 'Qiehao'
