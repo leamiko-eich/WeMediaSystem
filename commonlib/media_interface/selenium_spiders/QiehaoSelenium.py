@@ -159,7 +159,7 @@ if __name__ == "__main__":
     title = "个人笔记 - 今天怎么样"
     content ="Good Good Study, Day Day Up. 是的"
     username = '251132021'
-    obj_qiehao_selenium.login_with_password(username)
+    # obj_qiehao_selenium.login_with_password(username)
     obj_qiehao_selenium.login_with_cookie(username, wait_time=3)
     obj_qiehao_selenium.publish_article(title, content)
 
