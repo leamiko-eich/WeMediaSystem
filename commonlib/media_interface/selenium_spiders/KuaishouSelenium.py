@@ -18,7 +18,12 @@ except Exception as e:
  
 class Crawler(BaseSelenium):
     def __init__(self):
-        self.logurl = 'https://www.kuaishou.com/?isHome=1'
+        self.login_url = 'https://www.kuaishou.com/?isHome=1'
+        self.name_selenium = "kuaishou"
+        print(self.login_url)
+        super().__init__(login_url=self.login_url, name_selenium=self.name_selenium)
+        
+        
 
     def get_options(self):
         chrome_options = Options()
@@ -38,7 +43,7 @@ class Crawler(BaseSelenium):
     def login_with_password(self):
         chrome_options = self.get_chrome_options()
         driver = webdriver.Chrome(options=chrome_options)
-        driver.get(self.logurl)
+        driver.get(self.login_url)
         driver.maximize_window()
         time.sleep(3)
         driver.find_element(By.CSS_SELECTOR, value="[class='guide-btn']").click()
@@ -49,47 +54,48 @@ class Crawler(BaseSelenium):
         cookie = driver.get_cookies()
         print(cookie)
         jsonCookies = json.dumps(cookie)
-        with open('data/%s.json' % (username), 'w') as f:
+        with open('data/%s_%s.json' % (self.name_selenium, username), 'w') as f:
             print("写cookie")
             f.write(jsonCookies)
         time.sleep(5)
 
-    def login_with_cookie(self, username = ''):
+    # def login_with_cookie(self, username = ''):
 
-        chrome_options = self.get_chrome_options()
-        driver = webdriver.Chrome(options=chrome_options)
-        wait = WebDriverWait(driver, 1)
+    #     chrome_options = self.get_chrome_options()
+    #     driver = webdriver.Chrome(options=chrome_options)
+    #     wait = WebDriverWait(driver, 1)
 
-        ##登录百度知道
+    #     ##登录百度知道
     
-        #登录前清楚所有cookie
-        driver.maximize_window()
+    #     #登录前清楚所有cookie
+    #     driver.maximize_window()
 
-        driver.delete_all_cookies()
-        driver.get(self.logurl)
-        time.sleep(2)
-        driver.find_element(By.CSS_SELECTOR, value="[class='guide-btn']").click()
+    #     driver.delete_all_cookies()
+    #     driver.get(self.login_url)
+    #     time.sleep(2)
+    #     driver.find_element(By.CSS_SELECTOR, value="[class='guide-btn']").click()
 
-        f1 = open('data/%s.json' % (username))
-        cookie = f1.read()
-        cookie = json.loads(cookie)
-        for c in cookie:
-            print("add :", c)
-            driver.add_cookie(c)
+    #     f1 = open('data/%s.json' % (username))
+    #     cookie = f1.read()
+    #     cookie = json.loads(cookie)
+    #     for c in cookie:
+    #         print("add :", c)
+    #         driver.add_cookie(c)
         
-        # 重新登陆
-        time.sleep(3)
+    #     # 重新登陆
+    #     time.sleep(3)
 
-        driver.refresh()
-        driver.get(self.logurl)
-        # driver.maximize_window()
-        time.sleep(3)
-        return driver
+    #     driver.refresh()
+    #     driver.get(self.login_url)
+    #     # driver.maximize_window()
+    #     time.sleep(3)
+    #     return driver
 
 
 if __name__ == '__main__':
     ob_Crawler = Crawler()
     username = '18511400891'
-    # username = '18511400319'
     # ob_Crawler.login_with_password()
+    # username = '18511400891'
+
     driver = ob_Crawler.login_with_cookie(username)

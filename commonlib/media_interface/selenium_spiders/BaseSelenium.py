@@ -11,15 +11,16 @@ from bs4 import NavigableString
 
 class BaseSelenium(object):
     name_platform = 'base'
-    def __init__(self, mode="debug", useHead=True):
+    def __init__(self, mode="debug", useHead=True, login_url='', name_selenium='base'):
         if not os.path.exists("data"):
             os.mkdir("data")
 
-        self.name_selenium = 'base'
+        self.name_selenium = name_selenium
         self.dict_user_pass = {}
         self.driver = None
-        self.login_url = ''
+        self.login_url = login_url
         self.is_linux = self.get_is_linux()
+        self.useHead = useHead
 
 
         ##  內容canshu
@@ -135,7 +136,7 @@ class BaseSelenium(object):
 
         else:
             driver = webdriver.Chrome(options=chrome_options)
-   
+        driver.maximize_window()
         time.sleep(2)
         print("login_url:%s" % (self.login_url))
         logurl = self.login_url
@@ -196,7 +197,7 @@ class BaseSelenium(object):
                         # print("\t NotEqual key:%s" % (key) )
                 # print("\t 【修改完等地10")
                 # time.sleep(10)
-# 
+            # 
             # print("\t 刷新cookie, 等待7S")
             # time.sleep(2)
             # driver.get(logurl)
