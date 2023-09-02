@@ -88,6 +88,7 @@ class XiaohongshuSelenium(BaseSelenium):
             print('测试不发布')
             time.sleep(2)
             driver.quit()
+            return
         publish_button = driver.find_element(By.CLASS_NAME, 'css-k3hpu2')
         # Click the "发布" button
         publish_button.click()
