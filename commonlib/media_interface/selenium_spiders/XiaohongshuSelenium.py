@@ -64,8 +64,10 @@ class XiaohongshuSelenium(BaseSelenium):
         # 点击图文上传。
         upload_button = driver.find_element(By.XPATH,'//span[text()="上传图文"]')
         upload_button.click()
-
         file_path = "C:/Users/chongqingwei/Desktop/1.jpg"  # 本地文件的路径
+        if not self.useHead:
+            file_path = "/home/lengxiao/WeMediaSystem/commonlib/media_interface/selenium_spiders/images/2.jpeg"  # 本地文件的路径
+
         upload_input = driver.find_element(By.CLASS_NAME,"upload-input")
         upload_input.send_keys(file_path)
         time.sleep(4)
