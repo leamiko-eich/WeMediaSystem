@@ -91,6 +91,7 @@ class PinterestSelenium(BaseSelenium):
             print('测试不发布')
             time.sleep(2)
             driver.quit()
+            return
         # Click the "发布" button
         publish_button = driver.find_element(By.XPATH,'//div[text()="发布"]')
         publish_button.click()
