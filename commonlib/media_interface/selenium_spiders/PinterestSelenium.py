@@ -69,7 +69,10 @@ class PinterestSelenium(BaseSelenium):
 
         # 输入文件路径到<input>元素
         input_element = driver.find_element(By.ID, 'storyboard-upload-input')
+
         file_path = "C:/Users/chongqingwei/Desktop/1.jpg"  # 本地文件的路径
+        if not self.useHead:
+            file_path = "/home/lengxiao/WeMediaSystem/commonlib/media_interface/selenium_spiders/images/2.jpeg"  # 本地文件的路径
         input_element.send_keys(file_path)
         time.sleep(2)
 
