@@ -4,8 +4,9 @@ try:
 except Exception as e:
     from BaseSelenium import BaseSelenium
 from selenium import webdriver
-from selenium.webdriver.support.wait import WebDriverWait
-from selenium.common.exceptions import NoSuchElementException
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 import time, json
 
@@ -62,8 +63,10 @@ class XiaohongshuSelenium(BaseSelenium):
         time.sleep(3)
 
         # 点击图文上传。
-        upload_button = driver.find_element(By.XPATH,'//span[@class="title" and text()="上传图文"]')
-        upload_button.click()
+        wait = WebDriverWait(driver, 10)  # 最多等待10秒
+        upload_text_element = wait.until(
+            EC.presence_of_element_located((By.XPATH, '//span[@class="title" and text()="上传图文"]')))
+        upload_text_element.click()
         file_path = "C:/Users/chongqingwei/Desktop/1.jpg"  # 本地文件的路径
         if not self.useHead:
             file_path = "/home/lengxiao/WeMediaSystem/commonlib/media_interface/selenium_spiders/images/2.jpeg"  # 本地文件的路径
