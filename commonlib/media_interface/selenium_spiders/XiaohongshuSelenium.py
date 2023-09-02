@@ -63,10 +63,9 @@ class XiaohongshuSelenium(BaseSelenium):
         time.sleep(3)
 
         # 点击图文上传。
-        wait = WebDriverWait(driver, 10)  # 最多等待10秒
-        upload_text_element = wait.until(
-            EC.presence_of_element_located((By.XPATH, '//span[@class="title" and text()="上传图文"]')))
-        upload_text_element.click()
+        upload_button = driver.find_element(By.CSS_SELECTOR, 'span.title[text()="上传图文"]')
+        upload_button.click()
+
         file_path = "C:/Users/chongqingwei/Desktop/1.jpg"  # 本地文件的路径
         if not self.useHead:
             file_path = "/home/lengxiao/WeMediaSystem/commonlib/media_interface/selenium_spiders/images/2.jpeg"  # 本地文件的路径
