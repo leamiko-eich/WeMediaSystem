@@ -63,8 +63,8 @@ class XiaohongshuSelenium(BaseSelenium):
         time.sleep(3)
 
         # 点击图文上传。
-        upload_button = driver.find_element(By.CSS_SELECTOR, 'span.title[text()="上传图文"]')
-        upload_button.click()
+        upload_text_button = driver.find_element(By.XPATH ,"//span[text()='上传图文']")
+        upload_text_button.click()
 
         file_path = "C:/Users/chongqingwei/Desktop/1.jpg"  # 本地文件的路径
         if not self.useHead:
