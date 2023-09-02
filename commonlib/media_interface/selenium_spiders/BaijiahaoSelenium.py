@@ -64,7 +64,7 @@ class Crawler(BaseSelenium):
         driver.get(self.logurl)
         time.sleep(2)
     
-        f1 = open('data/%s.json' % (username))
+        f1 = open('data/%s_%s.json' % (self.name_selenium, username))
         cookie = f1.read()
         cookie = json.loads(cookie)
         for c in cookie:
