@@ -79,32 +79,32 @@ class ZhihuSelenium(BaseSelenium):
         chrome_options.add_argument('--disable-infobars')
         return chrome_options
 
-    def login_with_cookie(self, username = ''):
-
-        chrome_options = self.get_chrome_options()
-
-        driver = webdriver.Chrome(options=chrome_options)
-   
-        time.sleep(2)
-        logurl = self.login_url
-    
-        #登录前清楚所有cookie
-        driver.delete_all_cookies()
-        driver.get(logurl)
-        time.sleep(2)
-    
-        filename = "%s_%s" % (self.name_selenium, username)
-        f1 = open('data/%s.json' % (filename))
-        cookie = f1.read()
-        cookie = json.loads(cookie)
-        for c in cookie:
-            driver.add_cookie(c)
-        # # 刷新页面
-        time.sleep(2)
-        driver.refresh()
-        time.sleep(2)
-
-        self.driver = driver
+    # def login_with_cookie(self, username = ''):
+    #
+    #     chrome_options = self.get_chrome_options()
+    #
+    #     driver = webdriver.Chrome(options=chrome_options)
+    #
+    #     time.sleep(2)
+    #     logurl = self.login_url
+    #
+    #     #登录前清楚所有cookie
+    #     driver.delete_all_cookies()
+    #     driver.get(logurl)
+    #     time.sleep(2)
+    #
+    #     filename = "%s_%s" % (self.name_selenium, username)
+    #     f1 = open('data/%s.json' % (filename))
+    #     cookie = f1.read()
+    #     cookie = json.loads(cookie)
+    #     for c in cookie:
+    #         driver.add_cookie(c)
+    #     # # 刷新页面
+    #     time.sleep(2)
+    #     driver.refresh()
+    #     time.sleep(2)
+    #
+    #     self.driver = driver
 
  
 
@@ -225,9 +225,9 @@ if __name__ == "__main__":
     # obj_zhihu_selenium.login_with_password(username)
     obj_zhihu_selenium.login_with_cookie(username)
     obj_zhihu_selenium.publish_article(title, content, flag_debug=True)
-    obj_zhihu_selenium.quit_driver()
-
-    url = "https://www.zhihu.com/people/jiafeimao/posts"
+    # obj_zhihu_selenium.quit_driver()
+    #
+    # url = "https://www.zhihu.com/people/jiafeimao/posts"
     #link_art_url = obj_zhihu_selenium.crawl_by_author_link(url)
 
     # art_url  ="http://zhuanlan.zhihu.com/p/574523304"
