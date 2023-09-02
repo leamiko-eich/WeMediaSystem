@@ -116,20 +116,20 @@ class ZhihuSelenium(BaseSelenium):
 
 
         button_write_article = driver.find_element(By.CSS_SELECTOR, 'button[title="写文章"]')
-        self.save_element_html(button_write_article, 'button_write_article.html')
+        # self.save_element_html(button_write_article, 'button_write_article.html')
         button_write_article.click()
 
         self.switch_to_new_windows(driver)
 
         
         input_title = driver.find_element(By.CLASS_NAME, 'Input')
-        self.save_element_html(input_title, 'input_title.html')
+        # self.save_element_html(input_title, 'input_title.html')
         input_title.send_keys(article_title)
         time.sleep(2)
 
         # input_content = driver.find_element(By.CLASS_NAME, 'public-DraftStyleDefault-block public-DraftStyleDefault-ltr')
         input_content = driver.find_element(By.CSS_SELECTOR, '.public-DraftStyleDefault-block.public-DraftStyleDefault-ltr')
-        self.save_element_html(input_content, 'input_content.html')
+        # self.save_element_html(input_content, 'input_content.html')
         input_content.send_keys(article_content)
         time.sleep(2)
 
