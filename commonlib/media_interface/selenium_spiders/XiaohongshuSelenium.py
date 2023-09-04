@@ -114,7 +114,7 @@ class XiaohongshuSelenium(BaseSelenium):
     
 
 if __name__ == "__main__":
-    obj_xiaohongshu = XiaohongshuSelenium(useHead=True)
+    obj_xiaohongshu = XiaohongshuSelenium(useHead=False)
     title = "个人笔记 - 今天怎么样"
     content ="Good Good Study, Day Day Up. 是的"
     username = '18710090164'
