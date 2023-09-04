@@ -64,6 +64,7 @@ class XiaohongshuSelenium(BaseSelenium):
 
         # 点击图文上传。
         upload_text_button = driver.find_element(By.XPATH ,"//span[text()='上传图文']")
+        self.save_element_html(upload_text_button, 'upload_text_button.html')
         upload_text_button.click()
 
         file_path = "C:/Users/chongqingwei/Desktop/1.jpg"  # 本地文件的路径
