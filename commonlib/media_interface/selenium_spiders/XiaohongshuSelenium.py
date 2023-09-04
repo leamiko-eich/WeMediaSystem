@@ -7,6 +7,7 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
 import time, json
 
@@ -61,8 +62,16 @@ class XiaohongshuSelenium(BaseSelenium):
         self.login_url = 'https://creator.xiaohongshu.com/publish/publish'
         driver.get(self.login_url)
         time.sleep(3)
+        try:
+            # 使用Selenium的find_element方法根据class属性查找按钮
+            button = driver.find_element(By.CLASS_NAME, 'close-button')
+            # 点击按钮
+            button.click()
+        except NoSuchElementException:
+            # 如果找不到元素，捕获NoSuchElementException异常
+            print("未找到按钮元素")
+            pass
 
-        # 点击图文上传。
         upload_text_button = driver.find_element(By.XPATH ,"//span[text()='上传图文']")
         self.save_element_html(upload_text_button, 'upload_text_button.html')
         upload_text_button.click()
@@ -105,7 +114,7 @@ class XiaohongshuSelenium(BaseSelenium):
     
 
 if __name__ == "__main__":
-    obj_xiaohongshu = XiaohongshuSelenium(useHead=False)
+    obj_xiaohongshu = XiaohongshuSelenium(useHead=True)
     title = "个人笔记 - 今天怎么样"
     content ="Good Good Study, Day Day Up. 是的"
     username = '18710090164'
