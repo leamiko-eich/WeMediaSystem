@@ -13,6 +13,9 @@ from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.keys import Keys
 import requests
 from bs4 import BeautifulSoup
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+
 
 class ZhihuSelenium(BaseSelenium):
     name_platform = 'Zhihu'
@@ -110,16 +113,17 @@ class ZhihuSelenium(BaseSelenium):
 
 
     def publish_article(self, article_title, article_content, flag_debug=False):
-        chrome_options = self.get_chrome_options()
 
-        driver = self.driver
+        driver: webdriver.Chrome = self.get_driver()
+        self.login_url = 'https://zhuanlan.zhihu.com/write'
+        driver.get(self.login_url)
+        time.sleep(3)
 
-
-        button_write_article = driver.find_element(By.CSS_SELECTOR, 'button[title="写文章"]')
-        # self.save_element_html(button_write_article, 'button_write_article.html')
-        button_write_article.click()
-
-        self.switch_to_new_windows(driver)
+        # button_write_article = driver.find_element(By.CSS_SELECTOR, 'button[title="写文章"]')
+        # # self.save_element_html(button_write_article, 'button_write_article.html')
+        # button_write_article.click()
+        #
+        # self.switch_to_new_windows(driver)
 
         
         input_title = driver.find_element(By.CLASS_NAME, 'Input')
@@ -151,11 +155,79 @@ class ZhihuSelenium(BaseSelenium):
         else:
             btn_publish.click()
 
+    def publish_video(self, article_title, article_content, field = '娱乐',flag_debug=False):
+        chrome_options = self.get_chrome_options()
 
+        driver: webdriver.Chrome = self.get_driver()
+        self.login_url = 'https://www.zhihu.com/zvideo/upload-video'
+        driver.get(self.login_url)
+        time.sleep(3)
 
-        
+        file_path = "C:/Users/chongqingwei/Desktop/test.mp4"  # 本地文件的路径
+        file_input = driver.find_element(By.CSS_SELECTOR,'input[type="file"]')
 
-        time.sleep(30)
+        # Set the local file path for the input element
+        file_input.send_keys(file_path)
+
+        time.sleep(10)
+
+        # input_content = driver.find_element(By.CLASS_NAME, 'public-DraftStyleDefault-block public-DraftStyleDefault-ltr')
+        input_title = driver.find_element(By.XPATH,"//input[@placeholder='输入视频标题']")
+        input_title.clear()
+        # self.save_element_html(input_content, 'input_content.html')
+        input_title.send_keys(article_title)
+        time.sleep(2)
+
+        # Find the video description input field by its placeholder attribute
+        description_input = driver.find_element(By.XPATH,"//textarea[@placeholder='填写视频简介，让更多人找到你的视频']")
+
+        # Clear the existing content in the description input field
+        description_input.clear()
+        description_input.send_keys(article_content)
+
+        dropdown_button = driver.find_element(By.XPATH, "//button[contains(text(),'选择领域')]")
+
+        # Click the dropdown button to open the options
+        dropdown_button.click()
+        field = "娱乐"
+        option_xpath = f"//button[contains(text(), '{field}')]"
+        option_element = driver.find_element(By.XPATH, option_xpath)
+        option_element.click()
+
+        self.scroll_to_bottom(driver)
+        # Find the "绑定话题" button and click it
+        bind_topic_button = driver.find_element(By.XPATH, "//button[contains(text(), '绑定话题')]")
+        bind_topic_button.click()
+        wait = WebDriverWait(driver, 5)
+
+        # Input '娱乐' into the search field
+        bind_topic_button.send_keys('娱乐')
+        # Wait for the relevant topics to appear in the dropdown
+        relevant_topics_xpath = "//div[@class='RelevantTopics']//div[contains(@class, 'TopicItem')]"
+        wait.until(EC.visibility_of_all_elements_located((By.XPATH, relevant_topics_xpath)))
+
+        # Select the first relevant topic (you can change the index as needed)
+        relevant_topics = driver.find_elements(By.XPATH, relevant_topics_xpath)
+        if len(relevant_topics) > 0:
+            relevant_topics[0].click()
+
+        # btn_add_topic = driver.find_element(By.CLASS_NAME, '.css-f7rzgf')
+        # self.save_element_html(btn_add_topic, 'btn_add_topic.html')
+        # btn_add_topic.click()
+        # time.sleep(2)
+        #
+        # input_topic = driver.find_element(By.CSS_SELECTOR, '.css-nvm401.Input-wrapper.QZcfWkCJoarhIYxlM_sG')
+        # self.save_element_html(input_topic, 'input_topic.html')
+        # input_topic.send_keys('日记')
+        # time.sleep(2)
+
+        btn_publish = driver.find_element(By.CSS_SELECTOR, '.Button.css-d0uhtl.Button--primary.Button--blue')
+        if flag_debug:
+            print("测试环节，不发布")
+        else:
+            btn_publish.click()
+
+    time.sleep(30)
 
     def crawl_by_author_link(self, url=None):
         assert(url is not None)
@@ -218,13 +290,14 @@ class ZhihuSelenium(BaseSelenium):
         
         
 if __name__ == "__main__":
-    obj_zhihu_selenium = ZhihuSelenium(useHead=False)
+    obj_zhihu_selenium = ZhihuSelenium(useHead=True)
     title = "个人笔记 - 今天怎么样"
     content ="Good Good Study, Day Day Up. 是的"
     username = '251132021@qq.com'
     # obj_zhihu_selenium.login_with_password(username)
     obj_zhihu_selenium.login_with_cookie(username)
-    obj_zhihu_selenium.publish_article(title, content, flag_debug=True)
+    # obj_zhihu_selenium.publish_article(title, content, flag_debug=True)
+    obj_zhihu_selenium.publish_video(title, content, flag_debug=True)
     # obj_zhihu_selenium.quit_driver()
     #
     # url = "https://www.zhihu.com/people/jiafeimao/posts"
