@@ -108,16 +108,70 @@ class XiaohongshuSelenium(BaseSelenium):
         publish_button.click()
         time.sleep(2)
         driver.quit()
+    def publish_video(self, title, content):
+        driver: webdriver.Chrome = self.get_driver()
+        self.login_url = 'https://creator.xiaohongshu.com/publish/publish'
+        driver.get(self.login_url)
+        time.sleep(3)
+        try:
+            # 使用Selenium的find_element方法根据class属性查找按钮
+            button = driver.find_element(By.CLASS_NAME, 'close-button')
+            # 点击按钮
+            button.click()
+        except NoSuchElementException:
+            # 如果找不到元素，捕获NoSuchElementException异常
+            print("未找到按钮元素")
+            pass
+
+        upload_button = driver.find_element(By.XPATH ,'//div[@class="btn red"]')
+        driver.execute_script("arguments[0].click();", upload_button)
+        # self.save_element_html(upload_text_button, 'upload_text_button.html')
+        # upload_text_button.click()
+
+        file_path = "C:/Users/chongqingwei/Desktop/test.mp4" # 本地文件的路径
+        if not self.useHead:
+            file_path = "/home/lengxiao/WeMediaSystem/commonlib/media_interface/selenium_spiders/images/2.jpeg"  # 本地文件的路径
+
+        upload_input = driver.find_element(By.CSS_SELECTOR,'input.upload-input')
+        upload_input.send_keys(file_path)
+        time.sleep(4)
+        #输入标题
+        input_field = driver.find_element(By.CSS_SELECTOR ,'input.c-input_inner')
+        # Clear the existing content in the input field
+        input_field.clear()
+        # Enter your own title
+        input_field.send_keys(title)
+
+        # 输入正文内容
+        editable_element = driver.find_element(By.ID,"post-textarea")
+        # Clear any existing content (optional)
+        editable_element.clear()
+        # Enter your own content
+        editable_element.send_keys(content)
+        driver.execute_script("window.scrollBy(0, 30);")  # 500为滚动的像素值
+        # 定位到发布按钮
+        if not self.useHead:
+            print('测试不发布')
+            time.sleep(2)
+            driver.quit()
+            return
+        publish_button = driver.find_element(By.XPATH,'//span[text()="发布"]')
+        # 点击发布按钮
+        publish_button.click()
+        time.sleep(2)
+        driver.quit()
+
 
 
 
     
 
 if __name__ == "__main__":
-    obj_xiaohongshu = XiaohongshuSelenium(useHead=False)
+    obj_xiaohongshu = XiaohongshuSelenium(useHead=True)
     title = "个人笔记 - 今天怎么样"
     content ="Good Good Study, Day Day Up. 是的"
     username = '18710090164'
     # obj_xiaohongshu.login_with_password('18710090164')
     obj_xiaohongshu.login_with_cookie(username, wait_time=3)
-    obj_xiaohongshu.publish_article(title, content)
+    # obj_xiaohongshu.publish_article(title, content)
+    obj_xiaohongshu.publish_video(title, content)

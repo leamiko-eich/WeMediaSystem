@@ -304,16 +304,70 @@ class Crawler(BaseSelenium):
         driver.quit()
 
 
+    def publish_video(self, title, content, author='Lengxiao'):
+        driver: webdriver.Chrome = self.get_driver()
+        self.login_url = 'https://mp.toutiao.com/profile_v4/xigua/upload-video?from=toutiao_pc'
+        driver.get(self.login_url)
+        time.sleep(3)
 
+        video_file_path = 'C:/Users/chongqingwei/Desktop/test.mp4'
+        # Find the file input element (assuming it has a type="file" attribute)
+        file_input = driver.find_element(By.XPATH, '//input[@type="file"]')
+        # Send the file path to the input element
+        file_input.send_keys(video_file_path)
+        #上传时间较长要等
+        time.sleep(20)
+
+        # 输入正文内容
+        title_element = driver.find_element(By.CSS_SELECTOR,'.xigua-input-wrapper input')
+
+        # 输入正文内容
+        title_element.clear()
+        title_element.send_keys(title)
+
+
+        # # 添加封面图片
+        cover_element = driver.find_element(By.CSS_SELECTOR, 'div.fake-upload-trigger')
+        # 点击元素
+        cover_element.click()
+        time.sleep(5)
+        # 点击下一步按钮
+        next_button = driver.find_element(By.CSS_SELECTOR, 'div.footer div.m-button.red')
+        # 点击按钮
+        next_button.click()
+        time.sleep(5)
+
+        # 使用CSS选择器找到按钮元素
+        sure_button = driver.find_element(By.CSS_SELECTOR, 'div.btns button.btn-l.btn-sure')
+        time.sleep(5)
+        # 点击按钮
+        sure_button.click()
+
+        # 使用By.XPATH找到按钮元素
+        button = driver.find_element(By.XPATH, '//div[@class="footer undefined"]//button[contains(text(), "确定")]')
+        # 点击按钮
+        button.click()
+        time.sleep(10)
+        # 输入文件路径到<input>元素
+        if not self.useHead:
+            print('测试不发布')
+            time.sleep(2)
+            driver.quit()
+            return
+            # 使用CSS选择器定位按钮元素
+        button = driver.find_element(By.CSS_SELECTOR, 'div.button-group button[type="button"]')
+        # 点击按钮
+        button.click()
+        driver.quit()
 
 if __name__ == '__main__':
     http_name = 'www.toutiao.com'
-    ob_Crawler = Crawler(useHead=False)
+    ob_Crawler = Crawler(useHead=True)
     # username = '18335948033'
     username = '18710090164'
     toutiao_url = 'https://www.toutiao.com/c/user/token/MS4wLjABAAAAUZKG_KuaxVrOMiwDd3QXX0ZB3Nh4bcv7AFs9ZFpJQMo/?'
     # ob_Crawler.gather()
-    ob_Crawler.load_user_pass(section_name='toutiao')
+    # ob_Crawler.load_user_pass(section_name='toutiao')
     # ob_Crawler.login_with_password(username)
     # author_articles = ob_Crawler.search(toutiao_url)
     # title = author_articles[0]['article_title']
@@ -322,4 +376,5 @@ if __name__ == '__main__':
     # ob_Crawler.load_user_pass(section_name='toutiao')
     # ob_Crawler.login_with_password(username)
     ob_Crawler.login_with_cookie(username)
-    ob_Crawler.publish_article(title='你好', content='你好！！', author='冷萧')
+    # ob_Crawler.publish_article(title='你好', content='你好！！', author='冷萧')
+    ob_Crawler.publish_video(title='你好', content='你好！！', author='冷萧')
